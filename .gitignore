@@ -1,1 +1,4 @@
 Controque_de_Estoque/
+backend/venv/
+backend/db.sqlite3
+**/__pycache__/
