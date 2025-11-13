@@ -1,1 +1,0 @@
-Projeto de Controle de Estoque (Python/Django).
