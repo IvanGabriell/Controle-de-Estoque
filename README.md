@@ -1,1 +1,1 @@
-Projeto de Controle de Estoque (Python/Django).
+Projeto de Controle de Estoque (Python/Django).git 
