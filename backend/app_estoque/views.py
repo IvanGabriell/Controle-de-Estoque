@@ -41,7 +41,7 @@ class ProdutoViewSet(viewsets.ModelViewSet):
         """
         produto = self.get_object() #pega o produto
 
-        serializer = MovimentacaoActionSerialLizer(data=request.data)
+        serializer = MovimentacaoActionSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
