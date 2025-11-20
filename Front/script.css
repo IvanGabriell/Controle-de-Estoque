@@ -1,1 +1,156 @@
+  /* Paleta de Cores Aprimorada */
+        :root {
+            --primary-color: #198754; /* Novo Verde (mais profundo que o padrão) */
+            --primary-light: #28a745; /* Antigo Verde como acento leve */
+            --secondary-color: #f8f9fa; /* Fundo muito leve */
+            --text-color: #212529; /* Texto escuro */
+            --card-bg: #ffffff;
+            --info-color: #0d6efd;
+            --success-color: #198754;
+            --danger-color: #dc3545;
+        }
 
+        body {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            padding-bottom: 70px;
+            font-family: 'Inter', sans-serif; /* Aplica a nova fonte */
+            transition: background-color 0.5s;
+        }
+
+        /* Estilo da Barra de Navegação */
+        .navbar {
+            background-color: var(--primary-color); /* Usa o novo verde principal */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Sombra mais destacada */
+        }
+        .navbar-brand, .nav-link {
+            color: white !important;
+            font-weight: 600;
+        }
+        .nav-link {
+            padding: 8px 15px; /* Mais padding para melhor toque */
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+        }
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.15); /* Efeito hover mais suave */
+            transform: translateY(-1px);
+        }
+
+        /* Estilo dos Cards de Conteúdo */
+        .card {
+            margin: 30px auto;
+            max-width: 900px; /* Levemente mais largo */
+            border: none;
+            border-radius: 15px; /* Bordas mais arredondadas */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Sombra mais proeminente */
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+             /* Pequeno levantamento no hover */
+            /* transform: translateY(-3px); */
+        }
+
+        .card-body {
+            padding: 40px;
+        }
+
+        .card-title {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color); /* Linha divisória de cor primária */
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            font-weight: 700;
+            font-size: 1.8rem;
+        }
+        
+        .hidden { display: none !important; }
+
+        /* Estilo para a lista de gerenciamento de pessoas/produtos */
+        .list-group-item {
+            border-radius: 10px;
+            margin-bottom: 10px;
+            padding: 15px;
+            transition: all 0.3s ease;
+            border-left: 6px solid var(--primary-color); /* Destaque lateral mais grosso */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .list-group-item:hover {
+            background-color: #e9ecef;
+        }
+
+        /* Estilo de Botões */
+        .btn-primary {
+            background-color: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #157347 !important; /* Escurece um pouco no hover */
+            border-color: #157347 !important;
+        }
+        .btn-success {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        .btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        .btn {
+            border-radius: 8px;
+            font-weight: 600;
+            padding: 10px 20px;
+            transition: all 0.3s ease;
+        }
+
+        /* Estilo de Formulário */
+        .form-control {
+            border-radius: 8px;
+            padding: 10px 15px;
+            border: 1px solid #ced4da;
+        }
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25); /* Sombra de foco verde */
+        }
+
+        /* Badges de Role */
+        .badge.bg-success {
+            background-color: var(--primary-color) !important;
+            font-weight: 600;
+            padding: 6px 10px;
+        }
+        .badge.bg-danger {
+            background-color: var(--danger-color) !important;
+        }
+        .badge.bg-info {
+            background-color: var(--info-color) !important;
+        }
+        .badge.bg-secondary {
+            background-color: #6c757d !important;
+        }
+
+        /* Resultado da Consulta/Relatório */
+        #resultadoConsulta, #resultadoRelatorio {
+            background-color: #f1f8f3;
+            border: 1px solid var(--primary-light) !important;
+            border-radius: 10px;
+            padding: 20px !important;
+            white-space: pre-wrap; /* Mantém a formatação com <br> */
+        }
+        
+        /* Estilo do Rodapé */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #e9ecef;
+            color: #6c757d;
+            text-align: center;
+            padding: 15px 0;
+            font-size: 0.9rem;
+            border-top: 1px solid #dee2e6;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+        }
