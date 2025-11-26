@@ -18,7 +18,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-r#4sg#ygc(&g7em3seei-lo79*3pfeo6f1w(t4hjs1cloc=88*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# Mantemos True por enquanto para você ver erros se algo falhar na integração.
 DEBUG = True
 
 # Lista de domínios que o Django aceita servir.
@@ -90,12 +89,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'controle_estoque',
-        'USER': 'django_user',                
-        'PASSWORD': '319Gj4T5Z%R9g,F3hh/Ea$q.|Pz&69!4',        # <--- COLOQUE SUA SENHA AQUI
         
-        # LÓGICA INTELIGENTE:
-        # 1. Tenta ler a variável 'DB_HOST' (que você configurará no EasyPanel).
-        # 2. Se não encontrar (está no seu PC), usa '127.0.0.1'.
+        # 🚨 CORRIGIDO: USUÁRIO E SENHA OBTIDOS POR VARIÁVEIS DE AMBIENTE
+        'USER': os.getenv('DB_USER', 'django_user'),             
+        'PASSWORD': os.getenv('DB_PASSWORD', '319Gj4T5Z%R9g,F3hh/Ea$q.|Pz&69!4'), 
+        
+        # HOST: Procura 'DB_HOST' no EasyPanel, se não achar, usa local.
         'HOST': os.getenv('DB_HOST', '127.0.0.1'),
         
         'PORT': '3306',
