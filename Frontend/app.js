@@ -16,6 +16,7 @@ const users = {
 // --- Funções de Inicialização e Controle de Acesso ---
 
 function initializeUsers() {
+    // FUNÇÃO MANTIDA PARA COMPATIBILIDADE DE ROLES (admin/funcionario) 
     const pessoas = JSON.parse(localStorage.getItem('pessoas')) || [];
     const defaultUsers = {
         admin: { password: 'admin', role: 'admin' },
@@ -62,6 +63,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     const password = document.getElementById('password').value;
 
     try {
+        // PASSO 1: Obter o Token JWT
         const response = await fetch(JWT_TOKEN_URL, {
             method: 'POST',
             headers: {
@@ -76,18 +78,42 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         }
 
         const data = await response.json();
-        
         currentToken = data.access; 
 
-        initializeUsers(); 
-        currentUser = users[username] || { role: 'usuario' }; 
+        // PASSO 2: Fazer uma chamada autenticada para obter os dados do usuário logado e definir a role
+        const userDetailsResponse = await fetch(`${API_BASE_URL}/users/?username=${username}`, {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+
+        if (!userDetailsResponse.ok) {
+             throw new Error('Falha ao obter detalhes do usuário.');
+        }
+
+        const userData = await userDetailsResponse.json();
         
+        // PASSO 3: Mapear a Role de verdade
+        if (userData.length > 0) {
+            const user = userData[0]; 
+            let userRole = 'usuario';
+            if (user.is_superuser) {
+                userRole = 'admin';
+            } else if (user.is_staff) {
+                userRole = 'funcionario';
+            }
+            currentUser = { role: userRole };
+            
+        } else {
+            currentUser = { role: 'usuario' };
+        }
+        
+        // PASSO 4: Iniciar o Dashboard
         showPage('dashboard');
         updateNav();
 
     } catch (error) {
         console.error('Erro de conexão com a API:', error);
-        alert('Erro ao conectar com o servidor. Verifique se o Backend está online em ' + BASE_URL_API);
+        alert('Erro ao conectar com o servidor. Verifique o console para detalhes.');
     }
     
     this.reset();
