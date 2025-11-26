@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,290 +7,203 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
-    <link rel="stylesheet" href="styles.css"> 
+    <link rel="stylesheet" href="styles.css">
     
 </head>
 <body>
-
-    <div class="container mt-5">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-            <div class="container-fluid">
-                <span class="navbar-brand">Estoque PRO</span>
-                <div class="d-flex align-items-center">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item all-logged hidden"><a class="nav-link" href="#" onclick="showPage('dashboard')">Dashboard</a></li>
-                        <li class="nav-item all-logged hidden"><a class="nav-link" href="#" onclick="showPage('cadastro-produtos')">Produtos</a></li>
-                        <li class="nav-item all-logged hidden"><a class="nav-link" href="#" onclick="showPage('cadastro-fornecedores')">Fornecedores</a></li>
-                        <li class="nav-item all-logged hidden"><a class="nav-link" href="#" onclick="showPage('movimentacao')">Movimentação</a></li>
-                        <li class="nav-item admin hidden"><a class="nav-link" href="#" onclick="showPage('cadastro-pessoas')">Usuários</a></li>
-                        <li class="nav-item all-logged hidden"><a class="nav-link" href="#" onclick="showPage('consulta')">Consultas</a></li>
-                        <li class="nav-item all-logged hidden"><a class="nav-link" href="#" onclick="showPage('relatorio')">Relatórios</a></li>
-                    </ul>
-                    <span class="text-white me-3" id="loggedUsername"></span>
-                    <span class="badge bg-success me-3" id="loggedUserRole"></span>
-                    <button class="btn btn-danger" onclick="logout()">Sair</button>
-                </div>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#"> Controle de Estoque</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item all-logged"><a class="nav-link hidden" href="#" onclick="showPage('dashboard')">Dashboard</a></li>
+                    <li class="nav-item admin"><a class="nav-link hidden" href="#" onclick="showPage('cadastro-pessoas')">Cadastrar Pessoas</a></li>
+                    <li class="nav-item admin"><a class="nav-link hidden" href="#" onclick="showPage('cadastro-fornecedores')">Cadastrar Fornecedores</a></li>
+                    <li class="nav-item admin funcionario"><a class="nav-link hidden" href="#" onclick="showPage('cadastro-produtos')">Cadastrar Produtos</a></li>
+                    <li class="nav-item admin funcionario"><a class="nav-link hidden" href="#" onclick="showPage('entrada-produtos')">Entrada de Produtos</a></li>
+                    <li class="nav-item admin funcionario"><a class="nav-link hidden" href="#" onclick="showPage('saida-produtos')">Saída de Produtos</a></li>
+                    <li class="nav-item admin funcionario usuario"><a class="nav-link hidden" href="#" onclick="showPage('consulta-estoque')">Consultar Estoque</a></li>
+                    <li class="nav-item admin"><a class="nav-link hidden" href="#" onclick="showPage('relatorios')">Relatórios</a></li>
+                    <li class="nav-item all-logged"><a class="nav-link hidden" href="#" onclick="logout()">Sair (Logout)</a></li>
+                </ul>
             </div>
-        </nav>
+        </div>
+    </nav>
 
-        <div class="card" id="login">
-            <div class="card-header bg-primary text-white">
-                <h2>Login</h2>
-            </div>
+    <div class="container">
+        <div id="login" class="card">
             <div class="card-body">
+                <h2 class="card-title"> Login no Sistema</h2>
                 <form id="loginForm">
                     <div class="mb-3">
-                        <label for="username" class="form-label">Usuário (Nome)</label>
+                        <label for="username" class="form-label">Usuário</label>
                         <input type="text" class="form-control" id="username" required>
+                        <div class="form-text">Tente: admin ou usuário criado (senha deve ser a definida no createsuperuser)</div>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Senha</label>
                         <input type="password" class="form-control" id="password" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Entrar</button>
-                    <button type="button" class="btn btn-secondary" onclick="showPage('cadastro-pessoas')">Novo Cadastro</button>
+                    <button type="submit" class="btn btn-primary w-100">Entrar</button>
                 </form>
+                <p class="mt-4 text-center">
+                    <a href="#" onclick="showPage('cadastro-pessoas')" class="btn btn-sm btn-outline-secondary">Cadastrar novo usuário</a>
+                </p>
             </div>
         </div>
 
-        <div class="card hidden" id="dashboard">
-            <div class="card-header bg-success text-white">
-                <h2>Dashboard de Estoque</h2>
-            </div>
+        <div id="dashboard" class="hidden card">
             <div class="card-body">
-                <div class="row text-center">
-                    <div class="col-md-4 mb-3">
-                        <div class="p-3 border rounded">
-                            <h4>Total de Produtos</h4>
-                            <h1 class="text-primary" id="dashboardProdCount">0</h1>
+                <h2 class="card-title"> Dashboard de Controle</h2>
+                <p>Bem-vindo(a), <strong id="loggedUsername"></strong>! Seu nível de acesso é: <span class="badge bg-success" id="loggedUserRole"></span>. Use o menu acima para gerenciar o estoque.</p>
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded shadow-sm text-center">
+                            <h5>Produtos Cadastrados</h5>
+                            <p class="fs-2 text-primary" id="dashboardProdCount">0</p>
                         </div>
                     </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="p-3 border rounded">
-                            <h4>Estoque Total (Unidades)</h4>
-                            <h1 class="text-success" id="dashboardStockTotal">0</h1>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded shadow-sm text-center">
+                            <h5>Estoque Total (Qtd)</h5>
+                            <p class="fs-2 text-success" id="dashboardStockTotal">0</p>
                         </div>
                     </div>
-                    <div class="col-md-4 mb-3">
-                        <div class="p-3 border rounded">
-                            <h4>Itens em Baixo Estoque (<10)</h4>
-                            <h1 class="text-danger" id="dashboardLowStock">0</h1>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-light rounded shadow-sm text-center">
+                            <h5>Itens em Estoque Baixo</h5>
+                            <p class="fs-2 text-danger" id="dashboardLowStock">0</p>
                         </div>
                     </div>
                 </div>
-                <hr>
-                <button class="btn btn-info" onclick="updateDashboardData()">Atualizar Dados</button>
             </div>
         </div>
 
-        <div class="card hidden" id="cadastro-pessoas">
-            <div class="card-header bg-secondary text-white">
-                <h2>Cadastro de Usuários</h2>
-            </div>
+        <div id="cadastro-pessoas" class="hidden card">
             <div class="card-body">
-                <form id="cadastroForm" class="mb-4">
+                <h2 class="card-title"> Cadastro e Gerenciamento de Pessoas</h2>
+                <form id="cadastroForm">
                     <div class="row">
-                        <div class="col-md-4">
-                            <label for="nome" class="form-label">Nome de Usuário</label>
-                            <input type="text" class="form-control" id="nome" required>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="senha" class="form-label">Senha</label>
-                            <input type="password" class="form-control" id="senha" required>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="idade" class="form-label">Idade (Não usado na API)</label>
-                            <input type="number" class="form-control" id="idade" value="18" required>
-                        </div>
-                        <div class="col-md-2 d-flex align-items-end">
-                            <button type="submit" class="btn btn-secondary w-100">Cadastrar</button>
-                        </div>
+                        <div class="col-md-4 mb-3"><label for="nome" class="form-label">Nome de Usuário</label><input type="text" class="form-control" id="nome" required></div>
+                        <div class="col-md-3 mb-3"><label for="idade" class="form-label">Idade</label><input type="number" class="form-control" id="idade" min="1" required></div>
+                        <div class="col-md-5 mb-3"><label for="senha" class="form-label">Criar Senha</label><input type="password" class="form-control" id="senha" minlength="6" required></div>
                     </div>
+                    <div class="form-text mb-3">A senha deve ter pelo menos 6 caracteres. Novos usuários são registrados como 'usuario'.</div>
+                    <button type="submit" class="btn btn-primary w-100">Cadastrar Novo Usuário</button>
                 </form>
-                
-                <h4 class="text-primary mt-4">Lista e Permissões de Usuários</h4>
-                <ul class="list-group" id="listaPessoas">
-                    </ul>
+                <h4 class="mt-5 text-primary">Gerenciar Acesso (Apenas Admin)</h4>
+                <ul id="listaPessoas" class="list-group mt-3"></ul>
+            </div>
+        </div>
+
+        <div id="cadastro-fornecedores" class="hidden card">
+            <div class="card-body">
+                <h2 class="card-title"> Cadastro de Fornecedores</h2>
+                <form id="fornecedorForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3"><label>Nome do Fornecedor/Empresa:</label><input type="text" class="form-control" id="nomeFornecedor" required></div>
+                        <div class="col-md-6 mb-3"><label>CNPJ:</label><input type="text" class="form-control" id="cnpjFornecedor" required></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3"><label>Telefone:</label><input type="text" class="form-control" id="telefoneFornecedor"></div>
+                        <div class="col-md-6 mb-3"><label>Email:</label><input type="email" class="form-control" id="emailFornecedor"></div>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Cadastrar Fornecedor</button>
+                </form>
+                <h4 class="mt-5 text-primary">Fornecedores Cadastrados</h4>
+                <ul id="listaFornecedores" class="list-group mt-3"></ul>
             </div>
         </div>
         
-        <div class="card hidden" id="cadastro-fornecedores">
-            <div class="card-header bg-info text-white">
-                <h2>Cadastro de Fornecedores</h2>
-            </div>
+        <div id="cadastro-produtos" class="hidden card">
             <div class="card-body">
-                <form id="fornecedorForm" class="mb-4">
+                <h2 class="card-title"> Cadastro de Produtos</h2>
+                <form id="produtoForm">
                     <div class="row">
-                        <div class="col-md-6">
-                            <label for="nomeFornecedor" class="form-label">Nome</label>
-                            <input type="text" class="form-control" id="nomeFornecedor" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="cnpjFornecedor" class="form-label">CNPJ</label>
-                            <input type="text" class="form-control" id="cnpjFornecedor" required>
-                        </div>
+                        <div class="col-md-6 mb-3"><label>Nome:</label><input type="text" class="form-control" id="nomeProd" required></div>
+                        <div class="col-md-6 mb-3"><label>Código (Chave Única):</label><input type="text" class="form-control" id="codigoProd" required></div>
                     </div>
-                    <div class="row mt-3">
-                        <div class="col-md-4">
-                            <label for="telefoneFornecedor" class="form-label">Telefone</label>
-                            <input type="text" class="form-control" id="telefoneFornecedor">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="emailFornecedor" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="emailFornecedor">
-                        </div>
-                        <div class="col-md-4 d-flex align-items-end">
-                            <button type="submit" class="btn btn-info w-100">Cadastrar Fornecedor</button>
-                        </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3"><label>Categoria:</label><input type="text" class="form-control" id="categoria" required></div>
+                        <div class="col-md-4 mb-3"><label>Quantidade Inicial:</label><input type="number" class="form-control" id="quantidade" min="0" required></div>
+                        <div class="col-md-4 mb-3"><label>Preço Unitário (R$):</label><input type="number" class="form-control" id="preco" step="0.01" min="0" required></div>
                     </div>
+                    <button type="submit" class="btn btn-success w-100">Cadastrar Produto</button>
                 </form>
-                
-                <h4 class="text-primary mt-4">Fornecedores Cadastrados</h4>
-                <ul class="list-group" id="listaFornecedores">
-                    </ul>
+                <h4 class="mt-5 text-primary">Produtos em Estoque</h4>
+                <ul id="listaProdutos" class="list-group mt-3"></ul>
             </div>
         </div>
 
-        <div class="card hidden" id="cadastro-produtos">
-            <div class="card-header bg-warning text-dark">
-                <h2>Cadastro de Produtos</h2>
-            </div>
+        <div id="entrada-produtos" class="hidden card">
             <div class="card-body">
-                <form id="produtoForm" class="mb-4">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label for="nomeProd" class="form-label">Nome</label>
-                            <input type="text" class="form-control" id="nomeProd" required>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="codigoProd" class="form-label">Código</label>
-                            <input type="text" class="form-control" id="codigoProd" required>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="categoria" class="form-label">Categoria</label>
-                            <select class="form-select" id="categoria" required>
-                                <option value="ferramenta">Ferramenta</option>
-                                <option value="material">Material</option>
-                                <option value="epi">EPI</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="quantidade" class="form-label">Quantidade Inicial</label>
-                            <input type="number" class="form-control" id="quantidade" value="0" min="0" required>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="preco" class="form-label">Preço (R$)</label>
-                            <input type="number" class="form-control" id="preco" step="0.01" value="0" min="0" required>
-                        </div>
-                        <div class="col-md-1 d-flex align-items-end">
-                            <button type="submit" class="btn btn-warning w-100">Cadastrar</button>
-                        </div>
-                    </div>
+                <h2 class="card-title"> Registrar Entrada de Produtos</h2>
+                <form id="entradaForm">
+                    <div class="mb-3"><label>Código do Produto:</label><input type="text" class="form-control" id="codigoEntrada" required></div>
+                    <div class="mb-3"><label>Quantidade a Adicionar:</label><input type="number" class="form-control" id="quantidadeEntrada" min="1" required></div>
+                    <button type="submit" class="btn btn-primary w-100">Registrar Entrada</button>
                 </form>
-                
-                <h4 class="text-primary mt-4">Estoque Atual</h4>
-                <ul class="list-group" id="listaProdutos">
-                    </ul>
             </div>
         </div>
 
-        <div class="card hidden" id="movimentacao">
-            <div class="card-header bg-danger text-white">
-                <h2>Movimentação de Estoque</h2>
-            </div>
+        <div id="saida-produtos" class="hidden card">
             <div class="card-body">
-                
-                <div class="row">
-                    <div class="col-md-6 border-end">
-                        <h4 class="text-success">Dar Entrada (Recebimento)</h4>
-                        <form id="entradaForm">
-                            <div class="mb-3">
-                                <label for="codigoEntrada" class="form-label">Código do Produto</label>
-                                <input type="text" class="form-control" id="codigoEntrada" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="quantidadeEntrada" class="form-label">Quantidade</label>
-                                <input type="number" class="form-control" id="quantidadeEntrada" min="1" required>
-                            </div>
-                            <button type="submit" class="btn btn-success">Registrar Entrada</button>
-                        </form>
-                    </div>
-
-                    <div class="col-md-6">
-                        <h4 class="text-danger">Dar Saída (Venda/Uso)</h4>
-                        <form id="saidaForm">
-                            <div class="mb-3">
-                                <label for="codigoSaida" class="form-label">Código do Produto</label>
-                                <input type="text" class="form-control" id="codigoSaida" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="quantidadeSaida" class="form-label">Quantidade</label>
-                                <input type="number" class="form-control" id="quantidadeSaida" min="1" required>
-                            </div>
-                            <button type="submit" class="btn btn-danger">Registrar Saída</button>
-                        </form>
-                    </div>
-                </div>
-                
+                <h2 class="card-title"> Registrar Saída de Produtos</h2>
+                <form id="saidaForm">
+                    <div class="mb-3"><label>Código do Produto:</label><input type="text" class="form-control" id="codigoSaida" required></div>
+                    <div class="mb-3"><label>Quantidade a Remover:</label><input type="number" class="form-control" id="quantidadeSaida" min="1" required></div>
+                    <button type="submit" class="btn btn-danger w-100">Registrar Saída</button>
+                </form>
             </div>
         </div>
 
-        <div class="card hidden" id="consulta">
-            <div class="card-header bg-dark text-white">
-                <h2>Consulta de Produtos</h2>
-            </div>
+        <div id="consulta-estoque" class="hidden card">
             <div class="card-body">
-                <form id="consultaForm" class="mb-4">
+                <h2 class="card-title"> Consulta Detalhada de Estoque</h2>
+                <form id="consultaForm">
                     <div class="row">
-                        <div class="col-md-4">
-                            <label for="tipoConsulta" class="form-label">Consultar por</label>
-                            <select class="form-select" id="tipoConsulta">
+                        <div class="col-md-6 mb-3"><label>Tipo de Consulta:</label>
+                            <select class="form-control" id="tipoConsulta" required>
                                 <option value="todos">Todos os Produtos</option>
-                                <option value="codigo">Código</option>
-                                <option value="categoria">Categoria</option>
+                                <option value="codigo">Por Código</option>
+                                <option value="categoria">Por Categoria</option>
                             </select>
                         </div>
-                        <div class="col-md-5">
-                            <label for="valorConsulta" class="form-label">Valor (código ou categoria)</label>
-                            <input type="text" class="form-control" id="valorConsulta">
-                        </div>
-                        <div class="col-md-3 d-flex align-items-end">
-                            <button type="submit" class="btn btn-dark w-100">Consultar</button>
-                        </div>
+                        <div class="col-md-6 mb-3"><label>Valor (se aplicável):</label><input type="text" class="form-control" id="valorConsulta" placeholder="Ex: 'COD123' ou 'Eletrônicos'"></div>
                     </div>
+                    <button type="submit" class="btn btn-primary w-100">Consultar Estoque</button>
                 </form>
-                
-                <h4 class="mt-4">Resultado da Consulta:</h4>
-                <div class="alert alert-light" id="resultadoConsulta">Nenhum resultado ainda.</div>
+                <h4 class="mt-5 text-primary">Resultado da Consulta</h4>
+                <div id="resultadoConsulta" class="mt-3">Nenhum resultado para exibir.</div>
             </div>
         </div>
 
-        <div class="card hidden" id="relatorio">
-            <div class="card-header bg-secondary text-white">
-                <h2>Relatórios Gerenciais</h2>
-            </div>
+        <div id="relatorios" class="hidden card">
             <div class="card-body">
-                <form id="relatorioForm" class="mb-4">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label for="tipoRelatorio" class="form-label">Tipo de Relatório</label>
-                            <select class="form-select" id="tipoRelatorio" required>
-                                <option value="movimentacoes">Últimas 10 Movimentações</option>
-                                <option value="baixo">Produtos com Baixo Estoque (< 10)</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 d-flex align-items-end">
-                            <button type="submit" class="btn btn-secondary w-100">Gerar Relatório</button>
-                        </div>
+                <h2 class="card-title"> Geração de Relatórios</h2>
+                <form id="relatorioForm">
+                    <div class="mb-3"><label>Tipo de Relatório:</label>
+                        <select class="form-control" id="tipoRelatorio" required>
+                            <option value="baixo">Produtos com Estoque Baixo (&lt; 10)</option>
+                            <option value="movimentacoes">Últimas 10 Movimentações</option>
+                        </select>
                     </div>
+                    <button type="submit" class="btn btn-primary w-100">Gerar Relatório</button>
                 </form>
-                
-                <h4 class="mt-4">Resultado do Relatório:</h4>
-                <div class="alert alert-light" id="resultadoRelatorio">Nenhum relatório gerado ainda.</div>
+                <h4 class="mt-5 text-primary">Resultado do Relatório</h4>
+                <div id="resultadoRelatorio" class="mt-3">Nenhum relatório gerado.</div>
             </div>
         </div>
+    </div>
 
-    </div> <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <footer class="footer">
+        Sistema de Controle de Estoque &copy; 2025 - Todos os direitos reservados a Café
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script src="app.js"></script> 
 </body>
