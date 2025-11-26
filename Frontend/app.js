@@ -2,9 +2,6 @@ let currentUser = null;
 let currentToken = null; // CHAVE: Armazena o Token de Acesso (JWT)
 
 // 📢 CONFIGURAÇÃO DE PRODUÇÃO (EASYPANEL)
-// O Frontend (quem usa este script) estará em: faculdade.morenadoaco.com.br
-// O Backend (quem recebe as chamadas) estará em: api.morenadoaco.com.br
-
 const BASE_URL_API = 'https://api.morenadoaco.com.br'; // Endereço público do Backend
 
 const API_BASE_URL = `${BASE_URL_API}/api/v1`; 
