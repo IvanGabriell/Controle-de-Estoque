@@ -4,6 +4,17 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+# ====================================================================
+# NOVO: USER SERIALIZER (CRÍTICO PARA EXPOR AS PERMISSÕES)
+# ====================================================================
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        # CRÍTICO: Expor is_staff e is_superuser para mapear a role no Frontend
+        fields = ('id', 'username', 'email', 'is_staff', 'is_superuser') 
+# ====================================================================
+
+
 class CategoriaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Categoria

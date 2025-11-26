@@ -1,11 +1,12 @@
 from rest_framework import viewsets, status
-from rest_framework_simplejwt.authentication import JWTAuthentication  # ✅ ATUALIZADO PARA JWT
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from django.db.models import F
 from django.db import transaction
+from django.contrib.auth.models import User # Importação necessária para o queryset de usuários
 
 from .models import Categoria, Fornecedor, Produto, MovimentacaoEstoque
 from .serializers import (
@@ -13,25 +14,35 @@ from .serializers import (
     FornecedorSerializer,
     ProdutoSerializer,
     MovimentacaoEstoqueSerializer,
-    MovimentacaoActionSerializer 
+    MovimentacaoActionSerializer,
+    UserSerializer # ✅ NOVO: Importando o Serializer de Usuário
 )
+
+# NOVO: ViewSet para listar e detalhar usuários (irá responder a /users/)
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all().order_by('id') 
+    serializer_class = UserSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+# --- SEUS VIEWSETS EXISTENTES ---
 
 class CategoriaViewSet(viewsets.ModelViewSet):
     queryset = Categoria.objects.all()
     serializer_class = CategoriaSerializer
-    authentication_classes = [JWTAuthentication]  # ✅ ATUALIZADO
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 class FornecedorViewSet(viewsets.ModelViewSet):
     queryset = Fornecedor.objects.all()
     serializer_class = FornecedorSerializer
-    authentication_classes = [JWTAuthentication]  # ✅ ATUALIZADO
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     
 class ProdutoViewSet(viewsets.ModelViewSet):
     queryset = Produto.objects.all()
     serializer_class = ProdutoSerializer
-    authentication_classes = [JWTAuthentication]  # ✅ ATUALIZADO
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
     def _realizar_movimentacao(self, request, pk, tipo_movimentacao_const):
@@ -86,5 +97,5 @@ class ProdutoViewSet(viewsets.ModelViewSet):
 class MovimentacaoEstoqueViewSet(viewsets.ModelViewSet):
     queryset = MovimentacaoEstoque.objects.all()
     serializer_class = MovimentacaoEstoqueSerializer
-    authentication_classes = [JWTAuthentication]  # ✅ ATUALIZADO
+    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]

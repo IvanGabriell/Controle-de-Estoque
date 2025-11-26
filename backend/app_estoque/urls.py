@@ -1,15 +1,23 @@
 from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import CategoriaViewSet, FornecedorViewSet, ProdutoViewSet, MovimentacaoEstoqueViewSet
+from rest_framework import routers
+from .views import (
+    ProdutoViewSet, 
+    FornecedorViewSet, 
+    MovimentacaoEstoqueViewSet,
+    UserViewSet # ✅ NOVO: Importando o UserViewSet
+)
 
-#Essa aqui vai para registrar as rotas automaticamente
-router = DefaultRouter()
-router.register(r'categorias', CategoriaViewSet)
-router.register(r'fornecedores', FornecedorViewSet)
+# 1. Definir o Roteador
+router = routers.DefaultRouter()
+
+# 2. Registrar todos os ViewSets, incluindo o de Usuários
+router.register(r'users', UserViewSet) # <--- OBRIGATÓRIO: Adiciona a rota /users/
 router.register(r'produtos', ProdutoViewSet)
+router.register(r'fornecedores', FornecedorViewSet)
 router.register(r'movimentacoes-estoque', MovimentacaoEstoqueViewSet)
 
+# 3. Expor as rotas no URL principal
 urlpatterns = [
-    #Essa caçamba vai juntar todas as rotas que criamos no router
-    path ('', include(router.urls)),
+    # Isso expõe /api/v1/users/, /api/v1/produtos/, etc.
+    path('', include(router.urls)),
 ]
