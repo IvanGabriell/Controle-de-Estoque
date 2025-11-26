@@ -33,23 +33,23 @@ class Produto(models.Model):
     preco_venda = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     categoria = models.ForeignKey(
-            Categoria,
-            on_delete=models.PROTECT, #impede o apagamento da categoria caso tenha produtos vinculados a ela
-            related_name="produtos"
-        )
+        Categoria,
+        on_delete=models.PROTECT, #impede o apagamento da categoria caso tenha produtos vinculados a ela
+        related_name="produtos"
+    )
     fornecedor = models.ForeignKey(
-            Fornecedor,
-            on_delete=models.PROTECT, #impede o apagamento do fornecedor caso tenha produtos vinculados a ele
-            related_name="produtos",
-            blank=True,
-            null=True
-        )
+        Fornecedor,
+        on_delete=models.PROTECT, #impede o apagamento do fornecedor caso tenha produtos vinculados a ele
+        related_name="produtos",
+        blank=True,
+        null=True
+    )
 
     quantidade_estoque = models.PositiveIntegerField(default=0)
 
     class Meta:
-            verbose_name = "Produto"
-            verbose_name_plural = "Produtos"
+        verbose_name = "Produto"
+        verbose_name_plural = "Produtos"
 
     def __str__(self):
         return f"{self.nome} ({self.quantidade_estoque} em estoque)"
@@ -86,6 +86,7 @@ class MovimentacaoEstoque(models.Model):
         verbose_name_plural = "Movimentações de Estoque"
         ordering = ['-data_hora'] #Ordena da mais recente para a mais antiga
 
-        def __str__(self):
-            tipo_str = self.get_tipo_display() #Pega a representação legível do tipo
-            return f"{tipo_str} de {self.quantidade}x {self.produto.nome} em {self.data_hora.strftime('%d/%m/%Y')}"
+    # INDENTAÇÃO CORRIGIDA: Fora da classe Meta
+    def __str__(self): 
+        tipo_str = self.get_tipo_display() #Pega a representação legível do tipo
+        return f"{tipo_str} de {self.quantidade}x {self.produto.nome} em {self.data_hora.strftime('%d/%m/%Y')}"

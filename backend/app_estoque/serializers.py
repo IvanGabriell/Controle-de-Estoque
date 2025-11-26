@@ -1,10 +1,13 @@
 from rest_framework import serializers
 from .models import Categoria, Fornecedor, Produto, MovimentacaoEstoque
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class CategoriaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Categoria
-        fields = '__all__' #Vai serializar todos os campos do modelo Categoria
+        fields = '__all__' 
 
 class FornecedorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,13 +19,17 @@ class ProdutoSerializer(serializers.ModelSerializer):
         model = Produto
         fields = '__all__'
 
+# 1. Serializer para visualização e listagem (Read-Only)
 class MovimentacaoEstoqueSerializer(serializers.ModelSerializer):
+    # Campo para exibir o nome de usuário (leitura)
+    usuario_nome = serializers.CharField(source='usuario.username', read_only=True) 
+
     class Meta:
         model = MovimentacaoEstoque
-        fields = '__all__'
+        # Garante que o campo extra seja incluído e que campos sensíveis sejam read-only
+        fields = ['id', 'produto', 'tipo', 'quantidade', 'data_hora', 'usuario', 'usuario_nome']
+        read_only_fields = ['usuario', 'tipo', 'data_hora']
 
-class MovimentacaoEstoqueDetailSerializer(serializers.ModelSerializer):
-    quantidade = serializers.IntegerField()
-
+# 2. Serializer para a ação de Entrada/Saída (Write-Only)
 class MovimentacaoActionSerializer(serializers.Serializer):
     quantidade = serializers.IntegerField(min_value=1)
