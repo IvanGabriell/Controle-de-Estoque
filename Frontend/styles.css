@@ -10,54 +10,81 @@
             --danger-color: #dc3545;
         }
 
+        /* ANIMAÇÃO DE FUNDO */
         body {
-            background-color: var(--secondary-color);
+            /* Gradiente animado para dar movimento suave */
+            background: linear-gradient(-45deg, #2ecc71, #3498db, #8e44ad, #f39c12);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+            
             color: var(--text-color);
             padding-bottom: 70px;
-            font-family: 'Inter', sans-serif; /* Aplica a nova fonte */
+            font-family: 'Inter', sans-serif;
             transition: background-color 0.5s;
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        /* Ajuste para garantir que o menu e o footer fiquem legíveis */
+        .navbar, .footer {
+            position: relative;
+            z-index: 10;
         }
 
         /* Estilo da Barra de Navegação */
         .navbar {
-            background-color: var(--primary-color); /* Usa o novo verde principal */
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Sombra mais destacada */
+            background-color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
         .navbar-brand, .nav-link {
             color: white !important;
             font-weight: 600;
         }
         .nav-link {
-            padding: 8px 15px; /* Mais padding para melhor toque */
+            padding: 8px 15px;
             border-radius: 6px;
             transition: background-color 0.3s ease;
         }
         .nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.15); /* Efeito hover mais suave */
+            background-color: rgba(255, 255, 255, 0.15);
             transform: translateY(-1px);
         }
 
         /* Estilo dos Cards de Conteúdo */
         .card {
             margin: 30px auto;
-            max-width: 900px; /* Levemente mais largo */
+            max-width: 900px; 
             border: none;
-            border-radius: 15px; /* Bordas mais arredondadas */
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Sombra mais proeminente */
+            border-radius: 15px; 
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); /* Sombra mais escura para destacar no fundo */
             transition: transform 0.3s ease;
-        }
-        .card:hover {
-             /* Pequeno levantamento no hover */
-            /* transform: translateY(-3px); */
+            position: relative; /* Coloca o card sobre o fundo animado */
+            z-index: 10;
         }
 
+        /* Centraliza o card de login */
+        #login {
+            margin-top: 10vh;
+            max-width: 450px;
+        }
+        
         .card-body {
             padding: 40px;
         }
 
         .card-title {
             color: var(--primary-color);
-            border-bottom: 3px solid var(--primary-color); /* Linha divisória de cor primária */
+            border-bottom: 3px solid var(--primary-color);
             padding-bottom: 15px;
             margin-bottom: 25px;
             font-weight: 700;
@@ -72,7 +99,7 @@
             margin-bottom: 10px;
             padding: 15px;
             transition: all 0.3s ease;
-            border-left: 6px solid var(--primary-color); /* Destaque lateral mais grosso */
+            border-left: 6px solid var(--primary-color);
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
         .list-group-item:hover {
@@ -86,7 +113,7 @@
             transition: all 0.3s ease;
         }
         .btn-primary:hover {
-            background-color: #157347 !important; /* Escurece um pouco no hover */
+            background-color: #157347 !important; 
             border-color: #157347 !important;
         }
         .btn-success {
@@ -112,7 +139,7 @@
         }
         .form-control:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25); /* Sombra de foco verde */
+            box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
         }
 
         /* Badges de Role */
@@ -137,7 +164,7 @@
             border: 1px solid var(--primary-light) !important;
             border-radius: 10px;
             padding: 20px !important;
-            white-space: pre-wrap; /* Mantém a formatação com <br> */
+            white-space: pre-wrap;
         }
         
         /* Estilo do Rodapé */
@@ -152,5 +179,5 @@
             font-size: 0.9rem;
             border-top: 1px solid #dee2e6;
             box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
-            z-index: 1000;
+            z-index: 10;
         }
