@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Controle de Estoque - Fornecedores</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html"> Controle de Estoque</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item all-logged"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+                    <li class="nav-item admin"><a class="nav-link" href="cadastro-pessoas.html">Cadastrar Pessoas</a></li>
+                    <li class="nav-item admin"><a class="nav-link" href="cadastro-fornecedores.html">Cadastrar Fornecedores</a></li>
+                    <li class="nav-item admin funcionario"><a class="nav-link" href="cadastro-produtos.html">Cadastrar Produtos</a></li>
+                    <li class="nav-item admin funcionario"><a class="nav-link" href="entrada-produtos.html">Entrada de Produtos</a></li>
+                    <li class="nav-item admin funcionario"><a class="nav-link" href="saida-produtos.html">Saída de Produtos</a></li>
+                    <li class="nav-item admin funcionario usuario"><a class="nav-link" href="consulta-estoque.html">Consultar Estoque</a></li>
+                    <li class="nav-item admin"><a class="nav-link" href="relatorios.html">Relatórios</a></li>
+                    <li class="nav-item all-logged"><a class="nav-link" href="#" onclick="logout()">Sair (Logout)</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="cadastro-fornecedores" class="card">
+            <div class="card-body">
+                <h2 class="card-title"> Cadastro de Fornecedores</h2>
+                <form id="fornecedorForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3"><label>Nome do Fornecedor/Empresa:</label><input type="text" class="form-control" id="nomeFornecedor" required></div>
+                        <div class="col-md-6 mb-3"><label>CNPJ:</label><input type="text" class="form-control" id="cnpjFornecedor" required></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3"><label>Telefone:</label><input type="text" class="form-control" id="telefoneFornecedor"></div>
+                        <div class="col-md-6 mb-3"><label>Email:</label><input type="email" class="form-control" id="emailFornecedor"></div>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Cadastrar Fornecedor</button>
+                </form>
+                <h4 class="mt-5 text-primary">Fornecedores Cadastrados</h4>
+                <ul id="listaFornecedores" class="list-group mt-3"></ul>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        Sistema de Controle de Estoque &copy; 2025 - Todos os direitos reservados a Uniateneu
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script> 
+    <script>
+        checkAuthState();
+        updateListaFornecedores(); // Inicializa a lista de fornecedores
+    </script>
+</body>
+</html>
