@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  # Serviço 1: Banco de Dados MySQL
+  db:
+    image: mysql:8.0
+    container_name: estoque_mysql_db
+    environment:
+      MYSQL_DATABASE: controle_estoque
+      MYSQL_USER: django_user
+      MYSQL_PASSWORD: ${DB_PASSWORD_LOCAL:-mydevpassword}
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  # Serviço 2: Backend Django/Gunicorn
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: estoque_backend
+    # 🚨 CORREÇÃO CRÍTICA: Removendo 'backend.' do comando para que o Python encontre o 'config'
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: db 
+      DB_USER: django_user
+      DB_PASSWORD: ${DB_PASSWORD_LOCAL:-mydevpassword}
+      DEBUG: 1
+    depends_on:
+      - db
+
+  # Serviço 3: Frontend Nginx (Static Files)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: estoque_frontend
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  db_data:

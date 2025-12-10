@@ -1,16 +1,21 @@
-# Framework Principal
+# Django e Core
 Django==5.2.8
 asgiref==3.10.0
 sqlparse==0.5.3
 tzdata==2025.2
 
-# API e Autenticação (O que você usou no código)
-djangorestframework
-djangorestframework-simplejwt
+# REST API
+djangorestframework==3.15.2
+djangorestframework-simplejwt==5.3.1
 
-# Conexão com Banco de Dados e Segurança (O que configuramos no settings.py)
-mysqlclient
-django-cors-headers
+# Banco de Dados
+mysqlclient==2.2.4
 
-# Servidor de Produção (Necessário para o Dockerfile)
-gunicorn
+# CORS e Segurança
+django-cors-headers==4.5.0
+
+# Produção
+gunicorn==21.2.0
+
+# Dev (opcional)
+python-decouple==3.8  # Para gerenciar variáveis de ambiente

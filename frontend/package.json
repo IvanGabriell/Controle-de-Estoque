@@ -1,0 +1,10 @@
+{
+    "name": "frontend-controle-estoque",
+    "version": "1.0.0",
+    "description": "Frontend do Sistema de Controle de Estoque",
+    "scripts": {
+        "start": "node server.js",
+        "local": "node server.js",
+        "dev": "echo 'Acesse: http://localhost:3000' && node server.js"
+    }
+}
