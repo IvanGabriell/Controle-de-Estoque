@@ -26,7 +26,7 @@ ALLOWED_HOSTS = [
     'localhost',               
     '127.0.0.1',               
     'backend',                 # Nome interno do container
-    '*'                        # Fallback
+    '*'                        # Fallback para evitar erros de Host
 ]
 
 # ==============================================================================
@@ -52,7 +52,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware', # CORS deve ser o primeiro!
+    'corsheaders.middleware.CorsMiddleware', # IMPORTANTE: CORS deve ser o primeiro
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -62,7 +62,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# ✅ CORRIGIDO: Mantido como 'config' conforme sua pasta
+# ✅ Mantido como 'config' conforme sua estrutura
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
@@ -80,7 +80,7 @@ TEMPLATES = [
     },
 ]
 
-# ✅ CORRIGIDO: Mantido como 'config'
+# ✅ Mantido como 'config'
 WSGI_APPLICATION = 'config.wsgi.application'
 
 # ==============================================================================
@@ -90,7 +90,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        # Tenta pegar do Easypanel (Variáveis de Ambiente), se não achar, usa o Local
+        # Tenta pegar do Easypanel (Variáveis de Ambiente), se não achar, usa valores locais
         'NAME': os.getenv('DB_NAME', 'controle_estoque'),
         'USER': os.getenv('DB_USER', 'root'),
         'PASSWORD': os.getenv('DB_PASSWORD', ''),
@@ -102,7 +102,7 @@ DATABASES = {
     }
 }
 
-# Validação de senha
+# Validação de senhas
 AUTH_PASSWORD_VALIDATORS = [
     { 'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
     { 'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
@@ -151,7 +151,7 @@ SIMPLE_JWT = {
 }
 
 # ==============================================================================
-# 6. CORS & SEGURANÇA (CRÍTICO PARA O FRONTEND FUNCIONAR)
+# 6. CORS & SEGURANÇA (CRÍTICO)
 # ==============================================================================
 
 CORS_ALLOW_CREDENTIALS = True
@@ -172,12 +172,14 @@ if DEBUG:
 else:
     # --- MODO PRODUÇÃO (EASYPANEL) ---
     CORS_ALLOWED_ORIGINS = [
-        "https://faculdade.morenadoaco.com.br", # Seu Frontend
-        "https://api.morenadoaco.com.br",       # Seu Backend
+        "https://faculdade.morenadoaco.com.br",        # Seu Frontend
+        "https://faculedade.morenadoaco.com.br",      # Variante com erro de digitação (caso exista)
+        "https://api.morenadoaco.com.br",             # Seu Backend
     ]
     
     CSRF_TRUSTED_ORIGINS = [
         "https://faculdade.morenadoaco.com.br",
+        "https://faculedade.morenadoaco.com.br",
         "https://api.morenadoaco.com.br",
     ]
     
@@ -186,6 +188,6 @@ else:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 
-# Proxy para Docker/Easypanel
+# Proxy para Docker/Easypanel (Necessário para HTTPS funcionar)
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 USE_X_FORWARDED_HOST = True
