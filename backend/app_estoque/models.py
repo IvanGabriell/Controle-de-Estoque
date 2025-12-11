@@ -21,6 +21,7 @@ class Fornecedor(models.Model):
     telefone = models.CharField(max_length=20, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     endereco = models.TextField(blank=True, null=True)
+    # CNPJ deve aceitar nulo se não informado, para não dar erro de duplicidade em campos vazios
     cnpj = models.CharField(max_length=18, blank=True, null=True, unique=True)
     contato = models.CharField(max_length=100, blank=True, null=True)
     ativo = models.BooleanField(default=True)
@@ -73,9 +74,7 @@ class Produto(models.Model):
     def clean(self):
         """Validação personalizada"""
         if self.preco_venda < self.preco_custo:
-            raise ValidationError(
-                'O preço de venda não pode ser menor que o preço de custo'
-            )
+            raise ValidationError('O preço de venda não pode ser menor que o preço de custo')
     
     def save(self, *args, **kwargs):
         self.clean()
@@ -83,25 +82,17 @@ class Produto(models.Model):
     
     @property
     def lucro(self):
-        """Calcula o lucro unitário"""
         return self.preco_venda - self.preco_custo
     
     @property
     def margem_lucro(self):
-        """Calcula a margem de lucro em %"""
         if self.preco_custo > 0:
             return round(((self.preco_venda - self.preco_custo) / self.preco_custo) * 100, 2)
         return 0
     
     @property
     def estoque_baixo(self):
-        """Verifica se estoque está abaixo do mínimo"""
         return self.quantidade_estoque < self.estoque_minimo
-    
-    @property
-    def valor_total_estoque(self):
-        """Valor total em estoque (quantidade x preço_custo)"""
-        return self.quantidade_estoque * self.preco_custo
 
 class MovimentacaoEstoque(models.Model):
     class TipoMovimentacao(models.TextChoices):
@@ -109,53 +100,41 @@ class MovimentacaoEstoque(models.Model):
         SAIDA = 'S', 'Saída'
         AJUSTE = 'A', 'Ajuste'
     
-    produto = models.ForeignKey(
-        Produto,
-        on_delete=models.CASCADE,
-        related_name='movimentacoes'
-    )
-    tipo = models.CharField(
-        max_length=1,
-        choices=TipoMovimentacao.choices
-    )
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE, related_name='movimentacoes')
+    tipo = models.CharField(max_length=1, choices=TipoMovimentacao.choices)
     quantidade = models.PositiveIntegerField()
     data_hora = models.DateTimeField(auto_now_add=True)
-    
-    usuario = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
-    )
-    
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
     motivo = models.CharField(max_length=255, blank=True, null=True)
-    numero_documento = models.CharField(max_length=50, blank=True, null=True)
-    observacao = models.TextField(blank=True, null=True)
-    saldo_anterior = models.PositiveIntegerField(default=0)  # Saldo antes da movimentação
+    
+    saldo_anterior = models.PositiveIntegerField(default=0)
     
     class Meta:
-        verbose_name = "Movimentação de Estoque"
-        verbose_name_plural = "Movimentações de Estoque"
+        verbose_name = "Movimentação"
+        verbose_name_plural = "Movimentações"
         ordering = ['-data_hora']
 
     def __str__(self):
-        tipo_str = self.get_tipo_display()
-        return f"{tipo_str} de {self.quantidade}x {self.produto.nome}"
-    
+        return f"{self.get_tipo_display()} - {self.produto.nome} ({self.quantidade})"
+
+    def clean(self):
+        """Validação antes de salvar: Impede saída se não tiver estoque"""
+        if self.tipo == 'S' and self.quantidade > self.produto.quantidade_estoque:
+            raise ValidationError(f'Estoque insuficiente. Disponível: {self.produto.quantidade_estoque}')
+
     def save(self, *args, **kwargs):
-        """Atualiza automaticamente o estoque do produto"""
-        if not self.pk:  # Se for uma nova movimentação
+        self.clean() # Chama validação
+        
+        if not self.pk: # Apenas se for criação nova
             self.saldo_anterior = self.produto.quantidade_estoque
             
-            # Atualiza estoque do produto
-            if self.tipo == 'E':  # Entrada
+            if self.tipo == 'E':
                 self.produto.quantidade_estoque += self.quantidade
-            elif self.tipo == 'S':  # Saída
+            elif self.tipo == 'S':
+                # A validação já ocorreu no clean(), mas por segurança:
                 if self.produto.quantidade_estoque >= self.quantidade:
                     self.produto.quantidade_estoque -= self.quantidade
-                else:
-                    raise ValidationError('Estoque insuficiente para saída')
-            elif self.tipo == 'A':  # Ajuste
+            elif self.tipo == 'A':
                 self.produto.quantidade_estoque = self.quantidade
             
             self.produto.save()
