@@ -1,16 +1,18 @@
 from django.urls import path, include
 from rest_framework import routers
 from rest_framework_simplejwt.views import TokenRefreshView
+
+# Importando todas as views corretamente
 from .views import (
-    # ViewSets existentes
+    # ViewSets (Lógica padrão CRUD)
     ProdutoViewSet, 
     FornecedorViewSet, 
     MovimentacaoEstoqueViewSet,
     UserViewSet,
     CategoriaViewSet,
     
-    # Novas views de autenticação
-    CustomTokenObtainPairView,
+    # Views de Autenticação e Usuários (Personalizadas)
+    CustomTokenObtainPairView, # A classe que corrigimos
     register_view,
     create_user_admin,
     list_all_users,
@@ -18,101 +20,76 @@ from .views import (
     delete_user,
     me_view,
     
-    # Views de teste e utilitários
+    # Utilitários e Relatórios
     health_check,
     test_cors,
-    estatisticas_view,
-    
-    # Views de gerenciamento
     estatisticas_view
 )
 
-# 1. Definir o Roteador
+# 1. Definir o Roteador (Gera as rotas padrões automaticamente)
 router = routers.DefaultRouter()
-
-# 2. Registrar todos os ViewSets
 router.register(r'users', UserViewSet, basename='user')
 router.register(r'produtos', ProdutoViewSet, basename='produto')
 router.register(r'fornecedores', FornecedorViewSet, basename='fornecedor')
 router.register(r'movimentacoes', MovimentacaoEstoqueViewSet, basename='movimentacao')
 router.register(r'categorias', CategoriaViewSet, basename='categoria')
 
-# 3. Expor as rotas no URL principal
+# 2. Definir as Rotas
 urlpatterns = [
-    # Rotas da API via router
-    path('', include(router.urls)),
-    
     # ==========================================================================
-    # AUTENTICAÇÃO E USUÁRIOS
+    # ROTAS ESPECÍFICAS DE USUÁRIOS (Devem vir ANTES do router)
     # ==========================================================================
+    # Estas rotas batem exatamente com o fetch do seu JavaScript novo
     
-    # Login com JWT
-    path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    
-    # Registro público (qualquer um pode se registrar)
-    path('register/', register_view, name='register'),
-    
-    # Informações do usuário atual
-    path('me/', me_view, name='me'),
-    
-    # ==========================================================================
-    # GERENCIAMENTO DE USUÁRIOS (APENAS ADMIN)
-    # ==========================================================================
-    
-    # Criar usuário (apenas admin)
-    path('users/create/admin/', create_user_admin, name='create_user_admin'),
-    
-    # Listar todos os usuários (apenas admin)
-    path('users/list/all/', list_all_users, name='list_all_users'),
-    
-    # Atualizar role/permissões de um usuário (apenas admin)
+    path('users/admin-create/', create_user_admin, name='create_user_admin'),
+    path('users/all/', list_all_users, name='list_all_users'),
+    path('users/<int:user_id>/delete/', delete_user, name='delete_user_custom'),
     path('users/<int:user_id>/update-role/', update_user_role, name='update_user_role'),
     
-    # Deletar usuário (apenas admin)
-    path('users/<int:user_id>/delete/', delete_user, name='delete_user'),
-    
     # ==========================================================================
-    # TESTES E MONITORAMENTO
+    # AUTENTICAÇÃO (Login e Registro)
     # ==========================================================================
     
-    # Health check (público)
+    # Login: Retorna o Token JWT (Usa a view corrigida)
+    path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    # Refresh: Renova o token quando expira
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    # Registro Público
+    path('register/', register_view, name='register'),
+    # Dados do usuário logado
+    path('me/', me_view, name='me'),
+
+    # ==========================================================================
+    # ROTAS PADRÃO DO ROUTER (ViewSets)
+    # ==========================================================================
+    # Isso cuida de /users/, /users/1/, /produtos/, etc.
+    path('', include(router.urls)),
+
+    # ==========================================================================
+    # UTILITÁRIOS E MONITORAMENTO
+    # ==========================================================================
     path('health/', health_check, name='health_check'),
-    
-    # Teste de CORS (público)
     path('test-cors/', test_cors, name='test_cors'),
-    
-    # ==========================================================================
-    # RELATÓRIOS E ESTATÍSTICAS
-    # ==========================================================================
-    
-    # Estatísticas do sistema
     path('estatisticas/', estatisticas_view, name='estatisticas'),
-    
+
     # ==========================================================================
-    # ENDPOINTS ESPECÍFICOS DOS PRODUTOS (AÇÕES CUSTOMIZADAS)
+    # AÇÕES PERSONALIZADAS DE PRODUTOS
     # ==========================================================================
-    
-    # Entrada de estoque para um produto específico
     path('produtos/<int:pk>/entrada/', 
          ProdutoViewSet.as_view({'post': 'dar_entrada'}), 
          name='produto-entrada'),
     
-    # Saída de estoque para um produto específico
     path('produtos/<int:pk>/saida/', 
          ProdutoViewSet.as_view({'post': 'dar_saida'}), 
          name='produto-saida'),
     
-    # Listar produtos com estoque baixo
     path('produtos/estoque-baixo/', 
          ProdutoViewSet.as_view({'get': 'estoque_baixo'}), 
          name='produto-estoque-baixo'),
-    
+
     # ==========================================================================
-    # ENDPOINTS ESPECÍFICOS DOS FORNECEDORES
+    # AÇÕES PERSONALIZADAS DE FORNECEDORES
     # ==========================================================================
-    
-    # Listar apenas fornecedores ativos
     path('fornecedores/ativos/', 
          FornecedorViewSet.as_view({'get': 'ativos'}), 
          name='fornecedores-ativos'),

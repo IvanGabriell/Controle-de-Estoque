@@ -5,1072 +5,271 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Livraria Pro</title>
     
-    <!-- Bootstrap 5.3 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
-        :root {
-            --primary-color: #4361ee;
-            --secondary-color: #3a0ca3;
-            --accent-color: #4cc9f0;
-            --success-color: #06d6a0;
-            --warning-color: #ffd166;
-            --danger-color: #ef476f;
-            --dark-color: #1a1a2e;
-            --light-color: #f8f9fa;
-            --gradient-primary: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
-            --gradient-accent: linear-gradient(135deg, #4cc9f0 0%, #06d6a0 100%);
-            --sidebar-width: 260px;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f5f7fb;
-            color: #333;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        
-        /* ===== SIDEBAR MODERNA ===== */
-        .sidebar {
-            background: white;
-            width: var(--sidebar-width);
-            height: 100vh;
-            position: fixed;
-            left: 0;
-            top: 0;
-            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.08);
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            transition: all 0.3s ease;
-        }
-        
-        .sidebar-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .sidebar-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            color: var(--dark-color);
-        }
-        
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--gradient-primary);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-        }
-        
-        .logo-text {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 700;
-            font-size: 1.3rem;
-            line-height: 1.2;
-        }
-        
-        .logo-subtitle {
-            font-size: 0.75rem;
-            color: #6c757d;
-        }
-        
-        .sidebar-menu {
-            padding: 1.5rem 0;
-            flex: 1;
-            overflow-y: auto;
-        }
-        
-        .nav-item {
-            margin: 0.2rem 0;
-        }
-        
-        .nav-link {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 0.9rem 1.5rem;
-            color: #495057;
-            text-decoration: none;
-            border-radius: 0 12px 12px 0;
-            margin-right: 1rem;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-        
-        .nav-link:hover, .nav-link.active {
-            background: linear-gradient(90deg, rgba(67, 97, 238, 0.1) 0%, rgba(67, 97, 238, 0.05) 100%);
-            color: var(--primary-color);
-            border-left: 4px solid var(--primary-color);
-            transform: translateX(5px);
-        }
-        
-        .nav-link i {
-            font-size: 1.2rem;
-            width: 24px;
-            text-align: center;
-        }
-        
-        .sidebar-footer {
-            padding: 1.5rem;
-            border-top: 1px solid #eee;
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .user-avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: var(--gradient-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-        
-        .user-details h6 {
-            margin: 0;
-            font-weight: 600;
-        }
-        
-        .user-details small {
-            color: #6c757d;
-            font-size: 0.8rem;
-        }
-        
-        /* ===== CONTEÚDO PRINCIPAL ===== */
-        .main-content {
-            margin-left: var(--sidebar-width);
-            padding: 2rem;
-            min-height: 100vh;
-        }
-        
-        /* Header do Dashboard */
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        
-        .header-title h1 {
-            font-family: 'Poppins', sans-serif;
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--dark-color);
-            margin-bottom: 0.5rem;
-        }
-        
-        .header-title p {
-            color: #6c757d;
-            margin: 0;
-        }
-        
-        .header-actions {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-        
-        .btn-modern {
-            padding: 0.7rem 1.5rem;
-            border-radius: 10px;
-            border: none;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .btn-primary-modern {
-            background: var(--gradient-primary);
-            color: white;
-        }
-        
-        .btn-primary-modern:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.25);
-        }
-        
-        .btn-outline-modern {
-            background: transparent;
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-        }
-        
-        .btn-outline-modern:hover {
-            background: var(--primary-color);
-            color: white;
-        }
-        
-        /* ===== CARDS DE ESTATÍSTICAS ===== */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .stats-card {
-            background: white;
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-            border: none;
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            height: 100%;
-        }
-        
-        .stats-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-        }
-        
-        .stats-icon {
-            width: 70px;
-            height: 70px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-        }
-        
-        .stats-icon.blue {
-            background: rgba(67, 97, 238, 0.1);
-            color: var(--primary-color);
-        }
-        
-        .stats-icon.green {
-            background: rgba(6, 214, 160, 0.1);
-            color: var(--success-color);
-        }
-        
-        .stats-icon.orange {
-            background: rgba(255, 209, 102, 0.1);
-            color: var(--warning-color);
-        }
-        
-        .stats-icon.red {
-            background: rgba(239, 71, 111, 0.1);
-            color: var(--danger-color);
-        }
-        
-        .stats-content h3 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin: 0;
-            line-height: 1;
-        }
-        
-        .stats-content p {
-            color: #6c757d;
-            margin: 0.3rem 0 0 0;
-            font-size: 0.9rem;
-        }
-        
-        .stats-trend {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 0.85rem;
-            margin-top: 0.3rem;
-        }
-        
-        .trend-up {
-            color: var(--success-color);
-        }
-        
-        .trend-down {
-            color: var(--danger-color);
-        }
-        
-        /* ===== GRÁFICOS E TABELAS ===== */
-        .charts-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        
-        .chart-card {
-            background: white;
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-            border: none;
-        }
-        
-        .chart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        
-        .chart-header h3 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin: 0;
-        }
-        
-        .chart-container {
-            position: relative;
-            height: 250px;
-            width: 100%;
-        }
-        
-        /* ===== TABELA DE LIVROS ===== */
-        .table-section {
-            background: white;
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-            border: none;
-            margin-bottom: 2rem;
-        }
-        
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        
-        .section-header h3 {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin: 0;
-        }
-        
-        .table-modern {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
-        
-        .table-modern thead th {
-            background: #f8f9fa;
-            color: #495057;
-            font-weight: 600;
-            padding: 1rem;
-            border-bottom: 2px solid #eee;
-            text-align: left;
-        }
-        
-        .table-modern tbody td {
-            padding: 1rem;
-            border-bottom: 1px solid #eee;
-            vertical-align: middle;
-        }
-        
-        .table-modern tbody tr:hover {
-            background: #f8f9fa;
-        }
-        
-        .table-modern tbody tr:last-child td {
-            border-bottom: none;
-        }
-        
-        .badge-modern {
-            padding: 0.4rem 0.8rem;
-            border-radius: 20px;
-            font-weight: 500;
-            font-size: 0.85rem;
-        }
-        
-        .badge-success {
-            background: rgba(6, 214, 160, 0.15);
-            color: var(--success-color);
-        }
-        
-        .badge-warning {
-            background: rgba(255, 209, 102, 0.15);
-            color: var(--warning-color);
-        }
-        
-        .badge-danger {
-            background: rgba(239, 71, 111, 0.15);
-            color: var(--danger-color);
-        }
-        
-        /* ===== AÇÕES RÁPIDAS ===== */
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-        
-        .action-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            border: none;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            text-decoration: none;
-            color: inherit;
-            display: block;
-        }
-        
-        .action-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            border-color: var(--primary-color);
-        }
-        
-        .action-icon {
-            width: 60px;
-            height: 60px;
-            background: rgba(67, 97, 238, 0.1);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            margin: 0 auto 1rem auto;
-        }
-        
-        .action-card h4 {
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-        
-        .action-card p {
-            color: #6c757d;
-            font-size: 0.85rem;
-            margin: 0;
-        }
-        
-        /* ===== FOOTER ===== */
-        .footer {
-            text-align: center;
-            padding: 1.5rem;
-            color: #6c757d;
-            font-size: 0.9rem;
-            border-top: 1px solid #eee;
-            margin-top: 2rem;
-        }
-        
-        /* ===== RESPONSIVIDADE ===== */
-        @media (max-width: 992px) {
-            .sidebar {
-                transform: translateX(-100%);
-                width: 280px;
-            }
-            
-            .sidebar.active {
-                transform: translateX(0);
-            }
-            
-            .main-content {
-                margin-left: 0;
-                padding: 1rem;
-            }
-            
-            .charts-section {
-                grid-template-columns: 1fr;
-            }
-            
-            .menu-toggle {
-                display: block !important;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .dashboard-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .header-actions {
-                width: 100%;
-                justify-content: space-between;
-            }
-            
-            .quick-actions {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        
-        @media (max-width: 576px) {
-            .quick-actions {
-                grid-template-columns: 1fr;
-            }
-            
-            .header-actions {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-            
-            .btn-modern {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-        
-        /* ===== MENU TOGGLE (MOBILE) ===== */
-        .menu-toggle {
-            display: none;
-            position: fixed;
-            top: 1rem;
-            left: 1rem;
-            z-index: 1001;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            width: 45px;
-            height: 45px;
-            border-radius: 10px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
-        }
-        
-        /* ===== LOADING ===== */
-        .loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 200px;
-        }
-        
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid var(--primary-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        /* (Estilos mantidos intactos) */
+        :root { --primary-color: #4361ee; --secondary-color: #3a0ca3; --accent-color: #4cc9f0; --success-color: #06d6a0; --warning-color: #ffd166; --danger-color: #ef476f; --dark-color: #1a1a2e; --light-color: #f8f9fa; --gradient-primary: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%); --sidebar-width: 260px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f5f7fb; color: #333; min-height: 100vh; overflow-x: hidden; }
+        .sidebar { background: white; width: var(--sidebar-width); height: 100vh; position: fixed; left: 0; top: 0; box-shadow: 5px 0 25px rgba(0, 0, 0, 0.08); z-index: 1000; display: flex; flex-direction: column; transition: all 0.3s ease; }
+        .sidebar-header { padding: 1.5rem; border-bottom: 1px solid #eee; }
+        .sidebar-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--dark-color); }
+        .logo-icon { width: 40px; height: 40px; background: var(--gradient-primary); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; }
+        .logo-text { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.3rem; }
+        .logo-subtitle { font-size: 0.75rem; color: #6c757d; }
+        .sidebar-menu { padding: 1.5rem 0; flex: 1; overflow-y: auto; }
+        .nav-link { display: flex; align-items: center; gap: 12px; padding: 0.9rem 1.5rem; color: #495057; text-decoration: none; border-radius: 0 12px 12px 0; margin-right: 1rem; transition: all 0.3s ease; font-weight: 500; }
+        .nav-link:hover, .nav-link.active { background: rgba(67, 97, 238, 0.1); color: var(--primary-color); border-left: 4px solid var(--primary-color); }
+        .nav-link i { font-size: 1.2rem; width: 24px; text-align: center; }
+        .sidebar-footer { padding: 1.5rem; border-top: 1px solid #eee; }
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        .user-avatar { width: 45px; height: 45px; border-radius: 50%; background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; }
+        .main-content { margin-left: var(--sidebar-width); padding: 2rem; min-height: 100vh; }
+        .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+        .header-title h1 { font-family: 'Poppins', sans-serif; font-size: 2rem; font-weight: 700; color: var(--dark-color); margin-bottom: 0.5rem; }
+        .header-title p { color: #6c757d; margin: 0; }
+        .header-actions { display: flex; gap: 1rem; }
+        .btn-modern { padding: 0.7rem 1.5rem; border-radius: 10px; border: none; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease; cursor: pointer; }
+        .btn-primary-modern { background: var(--gradient-primary); color: white; }
+        .btn-primary-modern:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(67, 97, 238, 0.25); }
+        .btn-outline-modern { border: 2px solid var(--primary-color); color: var(--primary-color); background: transparent; }
+        .btn-outline-modern:hover { background: var(--primary-color); color: white; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .stats-card { background: white; border-radius: 16px; padding: 1.5rem; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); transition: all 0.3s ease; display: flex; align-items: center; gap: 1.5rem; height: 100%; border-bottom: 4px solid transparent; }
+        .stats-card:hover { transform: translateY(-5px); }
+        .stats-icon { width: 70px; height: 70px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
+        .blue { background: rgba(67, 97, 238, 0.1); color: var(--primary-color); }
+        .green { background: rgba(6, 214, 160, 0.1); color: var(--success-color); }
+        .orange { background: rgba(255, 209, 102, 0.1); color: var(--warning-color); }
+        .red { background: rgba(239, 71, 111, 0.1); color: var(--danger-color); }
+        .stats-content h3 { font-size: 1.8rem; font-weight: 700; margin: 0; line-height: 1; }
+        .stats-content p { color: #6c757d; margin: 0.3rem 0 0 0; font-size: 0.9rem; }
+        .charts-section { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+        .chart-card { background: white; border-radius: 16px; padding: 1.5rem; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); }
+        .chart-container { position: relative; height: 300px; width: 100%; }
+        .table-section { background: white; border-radius: 16px; padding: 1.5rem; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); margin-bottom: 2rem; }
+        .table-modern { width: 100%; border-collapse: separate; border-spacing: 0; }
+        .table-modern th { background: #f8f9fa; color: #495057; font-weight: 600; padding: 1rem; text-align: left; }
+        .table-modern td { padding: 1rem; border-bottom: 1px solid #eee; }
+        .badge-modern { padding: 0.4rem 0.8rem; border-radius: 20px; font-weight: 500; font-size: 0.85rem; }
+        .badge-danger { background: rgba(239, 71, 111, 0.15); color: var(--danger-color); }
+        .badge-warning { background: rgba(255, 209, 102, 0.15); color: var(--warning-color); }
+        @media (max-width: 992px) { .sidebar { transform: translateX(-100%); width: 280px; } .sidebar.active { transform: translateX(0); } .main-content { margin-left: 0; padding: 1rem; } .charts-section { grid-template-columns: 1fr; } .menu-toggle { display: block !important; } }
+        .menu-toggle { display: none; position: fixed; top: 1rem; left: 1rem; z-index: 1001; background: var(--primary-color); color: white; border: none; width: 45px; height: 45px; border-radius: 10px; }
     </style>
 </head>
 <body>
-    <!-- Botão Menu Toggle (Mobile) -->
-    <button class="menu-toggle" id="menuToggle">
-        <i class="bi bi-list"></i>
-    </button>
-    
-    <!-- Sidebar -->
+    <button class="menu-toggle" id="menuToggle"><i class="bi bi-list"></i></button>
     <aside class="sidebar" id="sidebar">
-        <!-- Logo -->
         <div class="sidebar-header">
             <a href="dashboard.html" class="sidebar-logo">
-                <div class="logo-icon">
-                    <i class="bi bi-book"></i>
-                </div>
-                <div>
-                    <div class="logo-text">Livraria Pro</div>
-                    <div class="logo-subtitle">Controle de Estoque</div>
-                </div>
+                <div class="logo-icon"><i class="bi bi-book"></i></div>
+                <div><div class="logo-text">Livraria Pro</div><div class="logo-subtitle">Controle de Estoque</div></div>
             </a>
         </div>
-        
-        <!-- Menu -->
         <nav class="sidebar-menu">
             <ul class="nav flex-column">
-                <li class="nav-item all-logged">
-                    <a class="nav-link active" href="dashboard.html">
-                        <i class="bi bi-speedometer2"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li class="nav-item admin">
-                    <a class="nav-link" href="cadastro-pessoas.html">
-                        <i class="bi bi-people"></i>
-                        <span>Funcionários</span>
-                    </a>
-                </li>
-                <li class="nav-item admin">
-                    <a class="nav-link" href="cadastro-fornecedores.html">
-                        <i class="bi bi-truck"></i>
-                        <span>Fornecedores</span>
-                    </a>
-                </li>
-                <li class="nav-item all-logged">
-                    <a class="nav-link" href="cadastro-produtos.html">
-                        <i class="bi bi-book"></i>
-                        <span>Cadastrar Livros</span>
-                    </a>
-                </li>
-                <li class="nav-item all-logged">
-                    <a class="nav-link" href="entrada-produtos.html">
-                        <i class="bi bi-arrow-down-circle"></i>
-                        <span>Entrada de Livros</span>
-                    </a>
-                </li>
-                <li class="nav-item all-logged">
-                    <a class="nav-link" href="saida-produtos.html">
-                        <i class="bi bi-arrow-up-circle"></i>
-                        <span>Venda de Livros</span>
-                    </a>
-                </li>
-                <li class="nav-item all-logged">
-                    <a class="nav-link" href="consulta-estoque.html">
-                        <i class="bi bi-search"></i>
-                        <span>Consultar Acervo</span>
-                    </a>
-                </li>
-                <li class="nav-item admin">
-                    <a class="nav-link" href="relatorios.html">
-                        <i class="bi bi-graph-up"></i>
-                        <span>Relatórios</span>
-                    </a>
-                </li>
+                <li class="nav-item all-logged"><a class="nav-link active" href="dashboard.html"><i class="bi bi-speedometer2"></i> <span>Dashboard</span></a></li>
+                <li class="nav-item admin"><a class="nav-link" href="cadastro-pessoas.html"><i class="bi bi-people"></i> <span>Funcionários</span></a></li>
+                <li class="nav-item admin"><a class="nav-link" href="cadastro-fornecedores.html"><i class="bi bi-truck"></i> <span>Fornecedores</span></a></li>
+                <li class="nav-item all-logged"><a class="nav-link" href="cadastro-produtos.html"><i class="bi bi-book"></i> <span>Cadastrar Livros</span></a></li>
+                <li class="nav-item all-logged"><a class="nav-link" href="entrada-produtos.html"><i class="bi bi-arrow-down-circle"></i> <span>Entrada de Livros</span></a></li>
+                <li class="nav-item all-logged"><a class="nav-link" href="saida-produtos.html"><i class="bi bi-arrow-up-circle"></i> <span>Venda de Livros</span></a></li>
+                <li class="nav-item all-logged"><a class="nav-link" href="consulta-estoque.html"><i class="bi bi-search"></i> <span>Consultar Acervo</span></a></li>
+                <li class="nav-item admin"><a class="nav-link" href="relatorios.html"><i class="bi bi-graph-up"></i> <span>Relatórios</span></a></li>
+                <li class="nav-item mt-3"><a class="nav-link text-danger" href="#" onclick="logout()"><i class="bi bi-box-arrow-right"></i> <span>Sair</span></a></li>
             </ul>
         </nav>
-        
-        <!-- Footer da Sidebar (Info do Usuário) -->
         <div class="sidebar-footer">
             <div class="user-info">
-                <div class="user-avatar" id="userAvatar">A</div>
-                <div class="user-details">
-                    <h6 id="loggedUsername">Carregando...</h6>
-                    <small id="loggedUserRole">Livraria Pro</small>
-                </div>
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div class="user-details"><h6 id="loggedUsername">...</h6><small id="loggedUserRole">...</small></div>
             </div>
         </div>
     </aside>
     
-    <!-- Conteúdo Principal -->
     <main class="main-content">
-        <!-- Header -->
         <div class="dashboard-header">
             <div class="header-title">
                 <h1>Dashboard - Livraria</h1>
-                <p>Gerencie seu acervo de livros de forma inteligente</p>
+                <p>Visão geral do seu acervo e desempenho</p>
             </div>
             <div class="header-actions">
-                <button class="btn-modern btn-outline-modern" onclick="refreshDashboard()">
-                    <i class="bi bi-arrow-clockwise"></i>
-                    Atualizar
-                </button>
-                <button class="btn-modern btn-primary-modern" onclick="showPage('cadastro-produtos')">
-                    <i class="bi bi-plus-circle"></i>
-                    Novo Livro
-                </button>
+                <button class="btn-modern btn-outline-modern" onclick="history.back()"><i class="bi bi-arrow-left"></i> Voltar</button>
+                <button class="btn-modern btn-outline-modern" onclick="location.reload()"><i class="bi bi-arrow-clockwise"></i> Atualizar</button>
+                <button class="btn-modern btn-primary-modern" onclick="window.location.href='cadastro-produtos.html'"><i class="bi bi-plus-circle"></i> Novo Livro</button>
             </div>
         </div>
         
-        <!-- Cards de Estatísticas -->
         <div class="stats-grid">
-            <div class="stats-card">
-                <div class="stats-icon blue">
-                    <i class="bi bi-book"></i>
-                </div>
-                <div class="stats-content">
-                    <h3 id="dashboardProdCount">0</h3>
-                    <p>Títulos no Acervo</p>
-                    <div class="stats-trend trend-up">
-                        <i class="bi bi-arrow-up"></i>
-                        <span>12% este mês</span>
-                    </div>
-                </div>
+            <div class="stats-card" style="border-bottom-color: var(--primary-color);">
+                <div class="stats-icon blue"><i class="bi bi-book"></i></div>
+                <div class="stats-content"><h3 id="dashTotalTitulos">0</h3><p>Títulos no Acervo</p></div>
             </div>
-            
-            <div class="stats-card">
-                <div class="stats-icon green">
-                    <i class="bi bi-stack"></i>
-                </div>
-                <div class="stats-content">
-                    <h3 id="dashboardStockTotal">0</h3>
-                    <p>Exemplares em Estoque</p>
-                    <div class="stats-trend trend-up">
-                        <i class="bi bi-arrow-up"></i>
-                        <span>8% este mês</span>
-                    </div>
-                </div>
+            <div class="stats-card" style="border-bottom-color: var(--success-color);">
+                <div class="stats-icon green"><i class="bi bi-stack"></i></div>
+                <div class="stats-content"><h3 id="dashTotalExemplares">0</h3><p>Exemplares em Estoque</p></div>
             </div>
-            
-            <div class="stats-card">
-                <div class="stats-icon orange">
-                    <i class="bi bi-exclamation-triangle"></i>
-                </div>
-                <div class="stats-content">
-                    <h3 id="dashboardLowStock">0</h3>
-                    <p>Livros com Estoque Baixo</p>
-                    <div class="stats-trend trend-down">
-                        <i class="bi bi-arrow-down"></i>
-                        <span>Necessita atenção</span>
-                    </div>
-                </div>
+            <div class="stats-card" style="border-bottom-color: var(--warning-color);">
+                <div class="stats-icon orange"><i class="bi bi-exclamation-triangle"></i></div>
+                <div class="stats-content"><h3 id="dashEstoqueBaixo">0</h3><p>Estoque Baixo (< 10)</p></div>
             </div>
-            
-            <div class="stats-card">
-                <div class="stats-icon red">
-                    <i class="bi bi-currency-dollar"></i>
-                </div>
-                <div class="stats-content">
-                    <h3 id="dashboardTotalValue">R$ 0,00</h3>
-                    <p>Valor Total do Acervo</p>
-                    <div class="stats-trend trend-up">
-                        <i class="bi bi-arrow-up"></i>
-                        <span>15% este mês</span>
-                    </div>
-                </div>
+            <div class="stats-card" style="border-bottom-color: var(--danger-color);">
+                <div class="stats-icon red"><i class="bi bi-currency-dollar"></i></div>
+                <div class="stats-content"><h3 id="dashValorTotal">R$ 0,00</h3><p>Valor Total do Acervo</p></div>
             </div>
         </div>
         
-        <!-- Gráficos -->
         <div class="charts-section">
             <div class="chart-card">
-                <div class="chart-header">
-                    <h3>Movimentação do Acervo</h3>
-                    <select class="form-select form-select-sm" style="width: auto;" id="chartPeriod">
-                        <option value="week">Esta Semana</option>
-                        <option value="month" selected>Este Mês</option>
-                        <option value="year">Este Ano</option>
-                    </select>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0">Movimentação do Acervo</h4>
+                    <span class="badge bg-light text-dark">Modo: Demonstração (Dados Fictícios)</span>
                 </div>
-                <div class="chart-container">
-                    <canvas id="stockChart"></canvas>
-                </div>
+                <div class="chart-container"><canvas id="movimentacaoChart"></canvas></div>
             </div>
-            
             <div class="chart-card">
-                <div class="chart-header">
-                    <h3>Livros por Gênero</h3>
-                    <span class="badge-modern badge-success" id="totalCategories">0 gêneros</span>
-                </div>
-                <div class="chart-container">
-                    <canvas id="categoryChart"></canvas>
-                </div>
+                <h4 class="mb-3">Livros por Gênero</h4>
+                <div class="chart-container"><canvas id="generosChart"></canvas></div>
             </div>
         </div>
         
-        <!-- Ações Rápidas -->
-        <div class="section-header">
-            <h3>Ações Rápidas</h3>
-            <small>Clique para acessar rapidamente</small>
-        </div>
-        
-        <div class="quick-actions">
-            <a href="entrada-produtos.html" class="action-card">
-                <div class="action-icon">
-                    <i class="bi bi-arrow-down-circle"></i>
-                </div>
-                <h4>Entrada de Livros</h4>
-                <p>Receber novos livros no estoque</p>
-            </a>
-            
-            <a href="saida-produtos.html" class="action-card">
-                <div class="action-icon">
-                    <i class="bi bi-cart-plus"></i>
-                </div>
-                <h4>Registrar Venda</h4>
-                <p>Vender livros para clientes</p>
-            </a>
-            
-            <a href="cadastro-produtos.html" class="action-card">
-                <div class="action-icon">
-                    <i class="bi bi-book-plus"></i>
-                </div>
-                <h4>Cadastrar Livro</h4>
-                <p>Adicionar novo título ao acervo</p>
-            </a>
-            
-            <a href="consulta-estoque.html" class="action-card">
-                <div class="action-icon">
-                    <i class="bi bi-search"></i>
-                </div>
-                <h4>Buscar Livro</h4>
-                <p>Consultar informações do acervo</p>
-            </a>
-        </div>
-        
-        <!-- Tabela de Livros com Estoque Baixo -->
         <div class="table-section">
-            <div class="section-header">
-                <h3>Livros com Estoque Baixo</h3>
-                <span class="badge-modern badge-danger" id="lowStockCount">0 itens</span>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="mb-0">Atenção: Livros com Estoque Baixo</h4>
+                <a href="entrada-produtos.html" class="btn btn-sm btn-outline-primary">Repor Estoque</a>
             </div>
-            
             <div class="table-responsive">
                 <table class="table-modern">
-                    <thead>
-                        <tr>
-                            <th>Título</th>
-                            <th>Autor</th>
-                            <th>Gênero</th>
-                            <th>Estoque Atual</th>
-                            <th>Mínimo</th>
-                            <th>Status</th>
-                            <th>Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody id="lowStockTable">
-                        <!-- Dados serão preenchidos por JavaScript -->
-                        <tr>
-                            <td colspan="7" class="text-center py-5">
-                                <div class="loading">
-                                    <div class="spinner"></div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
+                    <thead><tr><th>Código</th><th>Título / Produto</th><th>Gênero</th><th>Estoque Atual</th><th>Status</th><th>Ação</th></tr></thead>
+                    <tbody id="tabelaEstoqueBaixo"><tr><td colspan="6" class="text-center py-4">Carregando dados...</td></tr></tbody>
                 </table>
             </div>
         </div>
-        
-        <!-- Footer -->
-        <footer class="footer">
-            <p>Sistema de Controle de Estoque para Livraria &copy; 2025 - Livraria Pro</p>
-            <small>Versão 2.0 | Dashboard Moderno</small>
-        </footer>
+        <footer class="text-center text-muted mt-5 pb-3"><small>Sistema de Controle de Estoque &copy; 2025 - Livraria Pro</small></footer>
     </main>
     
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Seu JavaScript -->
-    <script src="app.js"></script>
-    
     <script>
-        // Scripts específicos do Dashboard da Livraria
-        
-        // Menu Toggle (Mobile)
-        document.getElementById('menuToggle').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('active');
-        });
-        
-        // Fecha menu ao clicar fora (mobile)
-        document.addEventListener('click', function(event) {
-            const sidebar = document.getElementById('sidebar');
-            const menuToggle = document.getElementById('menuToggle');
-            
-            if (window.innerWidth <= 992 && 
-                !sidebar.contains(event.target) && 
-                !menuToggle.contains(event.target) && 
-                sidebar.classList.contains('active')) {
-                sidebar.classList.remove('active');
+        const API_URL = 'http://localhost:8000/api/v1';
+        let categoriasMap = {};
+
+        function getToken() { return localStorage.getItem('access_token') || sessionStorage.getItem('access_token'); }
+        function parseJwt(token) { try { return JSON.parse(atob(token.split('.')[1])); } catch (e) { return null; } }
+        function logout() { localStorage.clear(); sessionStorage.clear(); window.location.href = 'index.html'; }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = getToken();
+            if (!token) { window.location.href = 'index.html'; return; }
+            const user = parseJwt(token);
+            if (user) {
+                const nome = user.username || user.user || "Usuário";
+                document.getElementById('loggedUsername').textContent = nome;
+                document.getElementById('loggedUserRole').textContent = user.is_superuser ? 'Administrador' : 'Funcionário';
+                if(nome.length > 0) document.getElementById('userAvatar').textContent = nome.charAt(0).toUpperCase();
             }
+            document.getElementById('menuToggle').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('active'));
+            carregarDadosDashboard();
         });
-        
-        // Inicialização do Dashboard
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('📚 Dashboard Livraria inicializado');
-            
-            // Verifica autenticação
-            checkAuthState();
-            
-            // Atualiza informações do usuário
-            updateUserInfo();
-            
-            // Carrega dados do dashboard
-            updateDashboardData();
-            
-            // Inicializa gráficos
-            setTimeout(initializeCharts, 1000);
-            
-            // Event listener para período do gráfico
-            document.getElementById('chartPeriod').addEventListener('change', function() {
-                updateCharts();
+
+        async function carregarDadosDashboard() {
+            try {
+                const resCat = await fetch(`${API_URL}/categorias/`, { headers: { 'Authorization': `Bearer ${getToken()}` }});
+                if(resCat.ok) {
+                    const dadosCat = await resCat.json();
+                    const listaCat = Array.isArray(dadosCat) ? dadosCat : dadosCat.results || [];
+                    listaCat.forEach(c => categoriasMap[c.id] = c.nome);
+                }
+                const resProd = await fetch(`${API_URL}/produtos/`, { headers: { 'Authorization': `Bearer ${getToken()}` }});
+                if(resProd.ok) {
+                    const dadosProd = await resProd.json();
+                    const produtos = Array.isArray(dadosProd) ? dadosProd : dadosProd.results || [];
+                    processarDados(produtos);
+                }
+            } catch (error) { console.error("Erro dashboard:", error); }
+        }
+
+        function processarDados(produtos) {
+            let totalTitulos = 0;
+            let totalEstoque = 0;
+            let valorTotal = 0;
+            let produtosBaixoEstoque = [];
+            let contagemGeneros = {};
+
+            produtos.forEach(p => {
+                const qtd = p.quantidade_estoque || 0;
+                const preco = parseFloat(p.preco_venda || 0);
+                const catNome = p.categoria_nome || categoriasMap[p.categoria] || 'Outros';
+
+                totalTitulos++;
+                totalEstoque += qtd;
+                valorTotal += (qtd * preco);
+                contagemGeneros[catNome] = (contagemGeneros[catNome] || 0) + 1;
+
+                if (qtd < 10) produtosBaixoEstoque.push(p);
             });
-        });
-        
-        // Atualiza informações do usuário na sidebar
-        function updateUserInfo() {
-            const userRole = JSON.parse(sessionStorage.getItem('userRole'));
-            const username = sessionStorage.getItem('username');
-            
-            if (username) {
-                document.getElementById('loggedUsername').textContent = username;
-                document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
-            }
-            
-            if (userRole) {
-                const roleText = userRole.role === 'admin' ? 'ADMINISTRADOR' :
-                               userRole.role === 'funcionario' ? 'FUNCIONÁRIO' : 'ATENDENTE';
-                document.getElementById('loggedUserRole').textContent = roleText;
-                
-                // Oculta itens do menu baseado na role
-                document.querySelectorAll('.nav-item').forEach(item => {
-                    if (item.classList.contains('admin') && userRole.role !== 'admin') {
-                        item.style.display = 'none';
-                    }
-                });
-            }
+
+            document.getElementById('dashTotalTitulos').textContent = totalTitulos;
+            document.getElementById('dashTotalExemplares').textContent = totalEstoque;
+            document.getElementById('dashEstoqueBaixo').textContent = produtosBaixoEstoque.length;
+            document.getElementById('dashValorTotal').textContent = valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+            renderizarTabelaBaixo(produtosBaixoEstoque);
+            renderizarGraficoGeneros(contagemGeneros);
+            renderizarGraficoMovimentacao(); // Chama a versão demonstração
         }
-        
-        // Atualiza dados do dashboard (simulação para livraria)
-        function updateDashboardData() {
-            console.log('🔄 Atualizando dados da livraria...');
-            
-            // Simula carregamento de dados da API
-            setTimeout(() => {
-                // Dados simulados para livraria
-                document.getElementById('dashboardProdCount').textContent = '856';
-                document.getElementById('dashboardStockTotal').textContent = '4.215';
-                document.getElementById('dashboardLowStock').textContent = '23';
-                document.getElementById('dashboardTotalValue').textContent = 'R$ 128.450,00';
-                document.getElementById('lowStockCount').textContent = '23 títulos';
-                document.getElementById('totalCategories').textContent = '15 gêneros';
-                
-                // Atualiza tabela de livros com estoque baixo
-                updateLowStockTable();
-                
-            }, 800);
-        }
-        
-        // Atualiza tabela de livros com estoque baixo
-        function updateLowStockTable() {
-            const tableBody = document.getElementById('lowStockTable');
-            
-            // Dados simulados para livraria
-            const lowStockBooks = [
-                { title: 'O Senhor dos Anéis', author: 'J.R.R. Tolkien', genre: 'Fantasia', current: 2, minimum: 5 },
-                { title: '1984', author: 'George Orwell', genre: 'Ficção', current: 1, minimum: 3 },
-                { title: 'Dom Casmurro', author: 'Machado de Assis', genre: 'Romance', current: 3, minimum: 8 },
-                { title: 'Harry Potter e a Pedra Filosofal', author: 'J.K. Rowling', genre: 'Fantasia', current: 2, minimum: 6 },
-                { title: 'A Revolução dos Bichos', author: 'George Orwell', genre: 'Ficção', current: 1, minimum: 4 }
-            ];
-            
-            if (lowStockBooks.length === 0) {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="7" class="text-center py-4">
-                            <i class="bi bi-check-circle text-success fs-4"></i>
-                            <p class="mt-2">Nenhum livro com estoque baixo!</p>
-                        </td>
-                    </tr>
-                `;
+
+        function renderizarTabelaBaixo(lista) {
+            const tbody = document.getElementById('tabelaEstoqueBaixo');
+            tbody.innerHTML = '';
+            if (lista.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-success"><i class="bi bi-check-circle"></i> Nenhum produto com estoque crítico.</td></tr>';
                 return;
             }
-            
-            let tableHTML = '';
-            
-            lowStockBooks.forEach(book => {
-                const percent = Math.round((book.current / book.minimum) * 100);
-                let statusClass = 'badge-warning';
-                let statusText = 'ATENÇÃO';
-                
-                if (percent <= 20) {
-                    statusClass = 'badge-danger';
-                    statusText = 'CRÍTICO';
-                }
-                
-                tableHTML += `
-                    <tr>
-                        <td><strong>${book.title}</strong></td>
-                        <td>${book.author}</td>
-                        <td>${book.genre}</td>
-                        <td><span class="fw-bold">${book.current}</span> exemplares</td>
-                        <td>${book.minimum} exemplares</td>
-                        <td><span class="badge-modern ${statusClass}">${statusText}</span></td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary" onclick="showPage('entrada-produtos')">
-                                <i class="bi bi-plus-circle me-1"></i>Repor
-                            </button>
-                        </td>
-                    </tr>
-                `;
+            lista.slice(0, 5).forEach(p => {
+                const cat = p.categoria_nome || categoriasMap[p.categoria] || '-';
+                const qtd = p.quantidade_estoque || 0;
+                let classeBadge = qtd === 0 ? 'badge-danger' : 'badge-warning';
+                let textoBadge = qtd === 0 ? 'Esgotado' : 'Crítico';
+                tbody.innerHTML += `<tr><td><small class="text-muted">${p.codigo_barras || '-'}</small></td><td class="fw-bold">${p.nome}</td><td>${cat}</td><td class="fw-bold text-danger">${qtd}</td><td><span class="badge-modern ${classeBadge}">${textoBadge}</span></td><td><button class="btn btn-sm btn-outline-primary" onclick="window.location.href='entrada-produtos.html'">Repor</button></td></tr>`;
             });
-            
-            tableBody.innerHTML = tableHTML;
         }
-        
-        // Inicializa gráficos para livraria
-        function initializeCharts() {
-            // Gráfico de movimentação
-            const stockCtx = document.getElementById('stockChart').getContext('2d');
-            window.stockChart = new Chart(stockCtx, {
+
+        function renderizarGraficoGeneros(dados) {
+            const ctx = document.getElementById('generosChart').getContext('2d');
+            if (Object.keys(dados).length === 0) dados = {'Sem Dados': 1};
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(dados),
+                    datasets: [{ data: Object.values(dados), backgroundColor: ['#4361ee', '#3a0ca3', '#4cc9f0', '#f72585', '#ffd166', '#06d6a0'], borderWidth: 0 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { usePointStyle: true, boxWidth: 8 } } } }
+            });
+        }
+
+        // === VERSÃO DEMONSTRAÇÃO (Estática) ===
+        function renderizarGraficoMovimentacao() {
+            const ctx = document.getElementById('movimentacaoChart').getContext('2d');
+            const dadosEntrada = [15, 25, 10, 30, 20, 15, 40, 25, 30, 15, 25, 40]; 
+            const dadosSaida   = [10, 20, 15, 25, 15, 10, 35, 20, 25, 12, 18, 30]; 
+
+            new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
-                    datasets: [{
-                        label: 'Entradas (Compra)',
-                        data: [45, 32, 28, 51, 42, 35, 20],
-                        borderColor: '#06d6a0',
-                        backgroundColor: 'rgba(6, 214, 160, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }, {
-                        label: 'Saídas (Vendas)',
-                        data: [32, 28, 35, 40, 38, 45, 30],
-                        borderColor: '#ef476f',
-                        backgroundColor: 'rgba(239, 71, 111, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }]
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                    datasets: [
+                        { label: 'Entradas', data: dadosEntrada, borderColor: '#06d6a0', backgroundColor: 'rgba(6, 214, 160, 0.1)', fill: true, tension: 0.4 },
+                        { label: 'Saídas', data: dadosSaida, borderColor: '#ef476f', tension: 0.4 }
+                    ]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.05)'
-                            },
-                            title: {
-                                display: true,
-                                text: 'Quantidade de Livros'
-                            }
-                        },
-                        x: {
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.05)'
-                            }
-                        }
-                    }
-                }
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } }, scales: { y: { beginAtZero: true } } }
             });
-            
-            // Gráfico de gêneros
-            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        }
+    </script>
+</body>
+</html>

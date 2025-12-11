@@ -3,61 +3,398 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Controle de Estoque - Relatórios</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Relatórios Gerenciais - Controle de Estoque</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* === ESTILOS GERAIS === */
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --success-color: #06d6a0;
+            --warning-color: #ffd166;
+            --danger-color: #ef476f;
+            --dark-color: #1a1a2e;
+            --light-color: #f8f9fa;
+            --sidebar-width: 260px;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fb;
+            color: #333;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            background: white; width: var(--sidebar-width); height: 100vh;
+            position: fixed; left: 0; top: 0;
+            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.08); z-index: 1000;
+            display: flex; flex-direction: column; transition: all 0.3s ease;
+        }
+        
+        .sidebar-header { padding: 1.5rem; border-bottom: 1px solid #eee; }
+        .sidebar-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--dark-color); }
+        .logo-icon { width: 40px; height: 40px; background: var(--primary-color); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; }
+        .logo-text { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.3rem; }
+        .logo-subtitle { font-size: 0.75rem; color: #6c757d; }
+        
+        .sidebar-menu { padding: 1.5rem 0; flex: 1; overflow-y: auto; }
+        .nav-link { display: flex; align-items: center; gap: 12px; padding: 0.9rem 1.5rem; color: #495057; text-decoration: none; border-radius: 0 12px 12px 0; margin-right: 1rem; transition: all 0.3s ease; font-weight: 500; }
+        .nav-link:hover, .nav-link.active { background: rgba(67, 97, 238, 0.1); color: var(--primary-color); border-left: 4px solid var(--primary-color); }
+        .nav-link i { font-size: 1.2rem; width: 24px; text-align: center; }
+        
+        .sidebar-footer { padding: 1.5rem; border-top: 1px solid #eee; }
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        .user-avatar { width: 45px; height: 45px; border-radius: 50%; background: var(--primary-color); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; }
+        
+        /* Main Content */
+        .main-content { margin-left: var(--sidebar-width); padding: 2rem; min-height: 100vh; }
+        
+        /* KPI Cards */
+        .kpi-card {
+            background: white; border-radius: 16px; padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05); transition: transform 0.3s;
+            border-bottom: 4px solid transparent;
+        }
+        .kpi-card:hover { transform: translateY(-5px); }
+        .kpi-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1rem; }
+        .kpi-value { font-size: 1.8rem; font-weight: 700; color: var(--dark-color); }
+        .kpi-label { color: #6c757d; font-size: 0.9rem; }
+
+        .kpi-blue { border-color: var(--primary-color); }
+        .kpi-blue .kpi-icon { background: rgba(67, 97, 238, 0.1); color: var(--primary-color); }
+        
+        .kpi-green { border-color: var(--success-color); }
+        .kpi-green .kpi-icon { background: rgba(6, 214, 160, 0.1); color: var(--success-color); }
+        
+        .kpi-red { border-color: var(--danger-color); }
+        .kpi-red .kpi-icon { background: rgba(239, 71, 111, 0.1); color: var(--danger-color); }
+
+        /* Report Controls */
+        .control-card { background: white; border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        
+        .form-control-modern { border: 2px solid #e9ecef; border-radius: 10px; padding: 0.6rem 1rem; background: #f8f9fa; }
+        .form-control-modern:focus { border-color: var(--primary-color); outline: none; background: white; }
+
+        /* Table */
+        .table-modern { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 1rem; }
+        .table-modern th { background: #f8f9fa; padding: 1rem; text-align: left; font-weight: 600; color: #495057; border-bottom: 2px solid #eee; }
+        .table-modern td { padding: 1rem; border-bottom: 1px solid #eee; }
+        
+        /* Chart Container */
+        .chart-container { position: relative; height: 300px; width: 100%; }
+
+        @media (max-width: 992px) {
+            .sidebar { transform: translateX(-100%); width: 280px; }
+            .sidebar.active { transform: translateX(0); }
+            .main-content { margin-left: 0; padding: 1rem; }
+            .menu-toggle { display: block !important; }
+        }
+        .menu-toggle { display: none; position: fixed; top: 1rem; left: 1rem; z-index: 1001; background: var(--primary-color); color: white; border: none; width: 45px; height: 45px; border-radius: 10px; }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" href="index.html"> Controle de Estoque</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
+    <button class="menu-toggle" id="menuToggle"><i class="bi bi-list"></i></button>
+    
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <div class="logo-icon"><i class="bi bi-book"></i></div>
+                <div>
+                    <div class="logo-text">Livraria Pro</div>
+                    <div class="logo-subtitle">Controle de Estoque</div>
+                </div>
+            </a>
+        </div>
+        <nav class="sidebar-menu">
+            <ul class="nav flex-column">
+                <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="bi bi-speedometer2"></i> <span>Dashboard</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="cadastro-pessoas.html"><i class="bi bi-people"></i> <span>Funcionários</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="cadastro-fornecedores.html"><i class="bi bi-truck"></i> <span>Fornecedores</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="cadastro-produtos.html"><i class="bi bi-box-seam"></i> <span>Produtos</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="entrada-produtos.html"><i class="bi bi-arrow-down-circle"></i> <span>Entrada</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="saida-produtos.html"><i class="bi bi-arrow-up-circle"></i> <span>Saída</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="consulta-estoque.html"><i class="bi bi-search"></i> <span>Estoque</span></a></li>
+                <li class="nav-item"><a class="nav-link active" href="relatorios.html"><i class="bi bi-file-earmark-bar-graph"></i> <span>Relatórios</span></a></li>
+                <li class="nav-item mt-3"><a class="nav-link text-danger" href="#" onclick="logout()"><i class="bi bi-box-arrow-right"></i> <span>Sair</span></a></li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div class="user-details">
+                    <h6 id="loggedUsername">...</h6>
+                    <small id="loggedUserRole">...</small>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="fw-bold text-dark">Relatórios Gerenciais</h1>
+                <p class="text-muted">Análise financeira e de inventário em tempo real</p>
+            </div>
+            <button class="btn btn-primary" type="button" onclick="window.print()">
+                <i class="bi bi-printer"></i> Imprimir Tela
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item all-logged"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
-                    <li class="nav-item admin"><a class="nav-link" href="cadastro-pessoas.html">Cadastrar Pessoas</a></li>
-                    <li class="nav-item admin"><a class="nav-link" href="cadastro-fornecedores.html">Cadastrar Fornecedores</a></li>
-                    <li class="nav-item admin funcionario"><a class="nav-link" href="cadastro-produtos.html">Cadastrar Produtos</a></li>
-                    <li class="nav-item admin funcionario"><a class="nav-link" href="entrada-produtos.html">Entrada de Produtos</a></li>
-                    <li class="nav-item admin funcionario"><a class="nav-link" href="saida-produtos.html">Saída de Produtos</a></li>
-                    <li class="nav-item admin funcionario usuario"><a class="nav-link" href="consulta-estoque.html">Consultar Estoque</a></li>
-                    <li class="nav-item admin"><a class="nav-link" href="relatorios.html">Relatórios</a></li>
-                    <li class="nav-item all-logged"><a class="nav-link" href="#" onclick="logout()">Sair (Logout)</a></li>
-                </ul>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="kpi-card kpi-blue">
+                    <div class="kpi-icon"><i class="bi bi-box-seam"></i></div>
+                    <div class="kpi-value" id="kpiTotalProdutos">0</div>
+                    <div class="kpi-label">Produtos Cadastrados</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="kpi-card kpi-green">
+                    <div class="kpi-icon"><i class="bi bi-currency-dollar"></i></div>
+                    <div class="kpi-value" id="kpiValorEstoque">R$ 0,00</div>
+                    <div class="kpi-label">Valor Total em Estoque (Venda)</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="kpi-card kpi-red">
+                    <div class="kpi-icon"><i class="bi bi-exclamation-triangle"></i></div>
+                    <div class="kpi-value" id="kpiEstoqueBaixo">0</div>
+                    <div class="kpi-label">Produtos com Estoque Crítico (&lt; 10)</div>
+                </div>
             </div>
         </div>
-    </nav>
 
-    <div class="container">
-        <div id="relatorios" class="card">
-            <div class="card-body">
-                <h2 class="card-title"> Geração de Relatórios</h2>
-                <form id="relatorioForm">
-                    <div class="mb-3"><label>Tipo de Relatório:</label>
-                        <select class="form-control" id="tipoRelatorio" required>
-                            <option value="baixo">Produtos com Estoque Baixo (&lt; 10)</option>
-                            <option value="movimentacoes">Últimas 10 Movimentações</option>
-                        </select>
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="control-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0 text-primary fw-bold"><i class="bi bi-table"></i> Detalhes</h5>
+                        
+                        <div class="d-flex align-items-center gap-2">
+                            <label class="text-muted small mb-0">Filtrar:</label>
+                            <select class="form-control-modern" style="width: 220px;" id="filtroRelatorio" onchange="gerarRelatorio()">
+                                <option value="todos">Inventário Completo</option>
+                                <option value="baixo">Apenas Estoque Baixo</option>
+                                <option value="valor">Top Valor Agregado</option>
+                            </select>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">Gerar Relatório</button>
-                </form>
-                <h4 class="mt-5 text-primary">Resultado do Relatório</h4>
-                <div id="resultadoRelatorio" class="mt-3">Nenhum relatório gerado.</div>
+                    
+                    <div class="table-responsive">
+                        <table class="table-modern">
+                            <thead>
+                                <tr>
+                                    <th>Produto</th>
+                                    <th>Categoria</th>
+                                    <th>Qtd</th>
+                                    <th>Preço Unit.</th>
+                                    <th>Total (R$)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelaRelatorio">
+                                <tr><td colspan="5" class="text-center text-muted">Carregando dados...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="control-card">
+                    <h5 class="mb-3 text-primary fw-bold"><i class="bi bi-pie-chart"></i> Por Categoria</h5>
+                    <div class="chart-container">
+                        <canvas id="graficoCategorias"></canvas>
+                    </div>
+                    <p class="text-muted small text-center mt-3">Distribuição do volume de itens por categoria.</p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <footer class="footer">
-        Sistema de Controle de Estoque &copy; 2025 - Todos os direitos reservados a Uniateneu
-    </footer>
+        <footer class="text-center text-muted mt-5 pb-3">
+            <small>Sistema de Controle de Estoque &copy; 2025</small>
+        </footer>
+    </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="app.js"></script> 
+    
     <script>
-        checkAuthState();
+        const API_URL = 'http://localhost:8000/api/v1';
+        let produtosGlobal = [];
+        let categoriasGlobal = {};
+        let meuGrafico = null; // Variável para o gráfico Chart.js
+
+        function getToken() { return localStorage.getItem('access_token') || sessionStorage.getItem('access_token'); }
+        function parseJwt(token) { try { return JSON.parse(atob(token.split('.')[1])); } catch (e) { return null; } }
+        function logout() { localStorage.clear(); sessionStorage.clear(); window.location.href = 'index.html'; }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = getToken();
+            if (!token) { alert("Login necessário."); window.location.href = 'index.html'; return; }
+
+            const user = parseJwt(token);
+            if (user) {
+                const nome = user.username || user.user || "Usuário";
+                document.getElementById('loggedUsername').textContent = nome;
+                document.getElementById('loggedUserRole').textContent = user.is_superuser ? 'Administrador' : 'Funcionário';
+                if(nome.length > 0) document.getElementById('userAvatar').textContent = nome.charAt(0).toUpperCase();
+            }
+
+            document.getElementById('menuToggle').addEventListener('click', () => {
+                document.getElementById('sidebar').classList.toggle('active');
+            });
+
+            carregarDadosCompletos();
+        });
+
+        // 1. Carrega TUDO (Categorias e Produtos) para calcular os relatórios
+        async function carregarDadosCompletos() {
+            try {
+                // Busca Categorias para o Mapa
+                const resCat = await fetch(`${API_URL}/categorias/`, { headers: { 'Authorization': `Bearer ${getToken()}` }});
+                if(resCat.ok) {
+                    const dadosCat = await resCat.json();
+                    const listaCat = Array.isArray(dadosCat) ? dadosCat : dadosCat.results || [];
+                    listaCat.forEach(c => categoriasGlobal[c.id] = c.nome);
+                }
+
+                // Busca Produtos
+                const resProd = await fetch(`${API_URL}/produtos/`, { headers: { 'Authorization': `Bearer ${getToken()}` }});
+                if(resProd.ok) {
+                    const dadosProd = await resProd.json();
+                    produtosGlobal = Array.isArray(dadosProd) ? dadosProd : dadosProd.results || [];
+                    
+                    atualizarKPIs();
+                    gerarRelatorio(); // Gera tabela inicial
+                    renderizarGrafico(); // Gera gráfico
+                }
+            } catch (error) {
+                console.error("Erro ao carregar dados:", error);
+                document.getElementById('tabelaRelatorio').innerHTML = '<tr><td colspan="5" class="text-danger text-center">Erro de conexão</td></tr>';
+            }
+        }
+
+        // 2. Calcula os números do topo (KPIs)
+        function atualizarKPIs() {
+            let totalItens = 0;
+            let valorTotal = 0;
+            let estoqueBaixo = 0;
+
+            produtosGlobal.forEach(p => {
+                const qtd = p.quantidade_estoque || 0;
+                const preco = parseFloat(p.preco_venda || 0);
+                
+                totalItens += 1; // Conta produtos cadastrados
+                valorTotal += (qtd * preco); // Soma valor financeiro
+                if (qtd < 10) estoqueBaixo++;
+            });
+
+            document.getElementById('kpiTotalProdutos').textContent = totalItens;
+            
+            // Formata dinheiro para BRL
+            document.getElementById('kpiValorEstoque').textContent = valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            
+            document.getElementById('kpiEstoqueBaixo').textContent = estoqueBaixo;
+            if(estoqueBaixo > 0) document.querySelector('.kpi-red').style.borderBottom = "4px solid #ef476f";
+        }
+
+        // 3. Gera a Tabela baseada no Select (Sem recarregar)
+        function gerarRelatorio() {
+            const tipo = document.getElementById('filtroRelatorio').value;
+            const tbody = document.getElementById('tabelaRelatorio');
+            tbody.innerHTML = '';
+
+            // Filtra os dados
+            let dadosFiltrados = [...produtosGlobal];
+
+            if (tipo === 'baixo') {
+                dadosFiltrados = dadosFiltrados.filter(p => (p.quantidade_estoque || 0) < 10);
+            } else if (tipo === 'valor') {
+                // Ordena por Valor Total (Qtd * Preço) do maior para o menor
+                dadosFiltrados.sort((a, b) => {
+                    const valA = (a.quantidade_estoque||0) * (a.preco_venda||0);
+                    const valB = (b.quantidade_estoque||0) * (b.preco_venda||0);
+                    return valB - valA;
+                });
+            }
+
+            if (dadosFiltrados.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">Nenhum dado encontrado para este filtro.</td></tr>';
+                return;
+            }
+
+            dadosFiltrados.forEach(p => {
+                const catNome = p.categoria_nome || categoriasGlobal[p.categoria] || 'Indefinida';
+                const qtd = p.quantidade_estoque || 0;
+                const preco = parseFloat(p.preco_venda || 0);
+                const total = qtd * preco;
+
+                // Destaca linha se estoque baixo
+                const classeLinha = (qtd < 10) ? 'table-danger' : ''; // Vermelho claro
+
+                const tr = document.createElement('tr');
+                if(tipo === 'baixo') tr.className = 'table-danger'; // Se o relatório for de baixo, pinta tudo
+
+                tr.innerHTML = `
+                    <td class="fw-bold">${p.nome}</td>
+                    <td><span class="badge bg-light text-dark border">${catNome}</span></td>
+                    <td>${qtd}</td>
+                    <td>R$ ${preco.toFixed(2)}</td>
+                    <td class="fw-bold text-success">R$ ${total.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // 4. Gera Gráfico de Pizza (Chart.js)
+        function renderizarGrafico() {
+            // Conta produtos por categoria
+            let contagem = {};
+            produtosGlobal.forEach(p => {
+                const nome = p.categoria_nome || categoriasGlobal[p.categoria] || 'Outros';
+                contagem[nome] = (contagem[nome] || 0) + (p.quantidade_estoque || 0); // Soma a QUANTIDADE de itens
+            });
+
+            const labels = Object.keys(contagem);
+            const data = Object.values(contagem);
+
+            const ctx = document.getElementById('graficoCategorias').getContext('2d');
+            
+            // Se já existir gráfico, destroi para recriar
+            if(meuGrafico) meuGrafico.destroy();
+
+            meuGrafico = new Chart(ctx, {
+                type: 'doughnut', // Tipo Rosquinha
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            '#4361ee', '#3a0ca3', '#4cc9f0', '#f72585', '#ffd166', '#06d6a0'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { usePointStyle: true } }
+                    }
+                }
+            });
+        }
     </script>
 </body>
 </html>

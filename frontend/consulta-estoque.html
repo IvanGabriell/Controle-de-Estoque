@@ -3,65 +3,386 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Controle de Estoque - Consultar Estoque</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Consultar Estoque - Controle de Estoque</title>
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* === ESTILOS GERAIS === */
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --success-color: #06d6a0;
+            --warning-color: #ffd166;
+            --danger-color: #ef476f;
+            --dark-color: #1a1a2e;
+            --light-color: #f8f9fa;
+            --gradient-primary: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+            --sidebar-width: 260px;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fb;
+            color: #333;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            background: white; width: var(--sidebar-width); height: 100vh;
+            position: fixed; left: 0; top: 0;
+            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.08); z-index: 1000;
+            display: flex; flex-direction: column; transition: all 0.3s ease;
+        }
+        
+        .sidebar-header { padding: 1.5rem; border-bottom: 1px solid #eee; }
+        .sidebar-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--dark-color); }
+        .logo-icon {
+            width: 40px; height: 40px; background: var(--gradient-primary);
+            border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px;
+        }
+        .logo-text { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.3rem; line-height: 1.2; }
+        .logo-subtitle { font-size: 0.75rem; color: #6c757d; }
+        
+        .sidebar-menu { padding: 1.5rem 0; flex: 1; overflow-y: auto; }
+        .nav-link {
+            display: flex; align-items: center; gap: 12px; padding: 0.9rem 1.5rem;
+            color: #495057; text-decoration: none; border-radius: 0 12px 12px 0;
+            margin-right: 1rem; transition: all 0.3s ease; font-weight: 500;
+        }
+        .nav-link:hover, .nav-link.active {
+            background: linear-gradient(90deg, rgba(67, 97, 238, 0.1) 0%, rgba(67, 97, 238, 0.05) 100%);
+            color: var(--primary-color); border-left: 4px solid var(--primary-color); transform: translateX(5px);
+        }
+        .nav-link i { font-size: 1.2rem; width: 24px; text-align: center; }
+        
+        .sidebar-footer { padding: 1.5rem; border-top: 1px solid #eee; }
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        .user-avatar {
+            width: 45px; height: 45px; border-radius: 50%; background: var(--gradient-primary);
+            display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;
+        }
+        
+        /* Main Content */
+        .main-content { margin-left: var(--sidebar-width); padding: 2rem; min-height: 100vh; }
+        
+        /* Cards */
+        .filter-card {
+            background: white; border-radius: 16px; padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); border: none; margin-bottom: 2rem;
+        }
+        
+        .form-control-modern {
+            border: 2px solid #e9ecef; border-radius: 10px; padding: 0.75rem 1rem;
+            background: #f8f9fa; transition: all 0.3s ease; height: 50px;
+        }
+        .form-control-modern:focus {
+            border-color: var(--primary-color); background: white; outline: none;
+        }
+        .form-label { font-weight: 600; color: #495057; margin-bottom: 0.5rem; }
+
+        /* Tabela */
+        .list-card {
+            background: white; border-radius: 16px; padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); border: none;
+        }
+        .table-modern { width: 100%; border-collapse: separate; border-spacing: 0; }
+        .table-modern th { background: #f8f9fa; padding: 1rem; text-align: left; color: #495057; font-weight: 600; border-bottom: 2px solid #eee; }
+        .table-modern td { padding: 1rem; border-bottom: 1px solid #eee; vertical-align: middle; }
+        
+        .menu-toggle {
+            display: none; position: fixed; top: 1rem; left: 1rem; z-index: 1001;
+            background: var(--primary-color); color: white; border: none; width: 45px; height: 45px;
+            border-radius: 10px;
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar { transform: translateX(-100%); width: 280px; }
+            .sidebar.active { transform: translateX(0); }
+            .main-content { margin-left: 0; padding: 1rem; }
+            .menu-toggle { display: block !important; }
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" href="index.html"> Controle de Estoque</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
+    <button class="menu-toggle" id="menuToggle"><i class="bi bi-list"></i></button>
+    
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="dashboard.html" class="sidebar-logo">
+                <div class="logo-icon"><i class="bi bi-book"></i></div>
+                <div>
+                    <div class="logo-text">Livraria Pro</div>
+                    <div class="logo-subtitle">Controle de Estoque</div>
+                </div>
+            </a>
+        </div>
+        
+        <nav class="sidebar-menu">
+            <ul class="nav flex-column">
+                <li class="nav-item"><a class="nav-link" href="dashboard.html"><i class="bi bi-speedometer2"></i> <span>Dashboard</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="cadastro-pessoas.html"><i class="bi bi-people"></i> <span>Funcionários</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="cadastro-fornecedores.html"><i class="bi bi-truck"></i> <span>Fornecedores</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="cadastro-produtos.html"><i class="bi bi-box-seam"></i> <span>Produtos</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="entrada-produtos.html"><i class="bi bi-arrow-down-circle"></i> <span>Entrada</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="saida-produtos.html"><i class="bi bi-arrow-up-circle"></i> <span>Saída</span></a></li>
+                
+                <li class="nav-item"><a class="nav-link active" href="consulta-estoque.html"><i class="bi bi-search"></i> <span>Estoque</span></a></li>
+                
+                <li class="nav-item"><a class="nav-link" href="relatorios.html"><i class="bi bi-file-earmark-bar-graph"></i> <span>Relatórios</span></a></li>
+                <li class="nav-item mt-3"><a class="nav-link text-danger" href="#" onclick="logout()"><i class="bi bi-box-arrow-right"></i> <span>Sair</span></a></li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div class="user-details">
+                    <h6 id="loggedUsername">...</h6>
+                    <small id="loggedUserRole">...</small>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="fw-bold text-dark">Consultar Estoque</h1>
+                <p class="text-muted">Visão geral do inventário da livraria</p>
+            </div>
+            <button class="btn btn-primary" onclick="window.print()">
+                <i class="bi bi-printer"></i> Imprimir
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item all-logged"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
-                    <li class="nav-item admin"><a class="nav-link" href="cadastro-pessoas.html">Cadastrar Pessoas</a></li>
-                    <li class="nav-item admin"><a class="nav-link" href="cadastro-fornecedores.html">Cadastrar Fornecedores</a></li>
-                    <li class="nav-item admin funcionario"><a class="nav-link" href="cadastro-produtos.html">Cadastrar Produtos</a></li>
-                    <li class="nav-item admin funcionario"><a class="nav-link" href="entrada-produtos.html">Entrada de Produtos</a></li>
-                    <li class="nav-item admin funcionario"><a class="nav-link" href="saida-produtos.html">Saída de Produtos</a></li>
-                    <li class="nav-item admin funcionario usuario"><a class="nav-link" href="consulta-estoque.html">Consultar Estoque</a></li>
-                    <li class="nav-item admin"><a class="nav-link" href="relatorios.html">Relatórios</a></li>
-                    <li class="nav-item all-logged"><a class="nav-link" href="#" onclick="logout()">Sair (Logout)</a></li>
-                </ul>
-            </div>
         </div>
-    </nav>
 
-    <div class="container">
-        <div id="consulta-estoque" class="card">
-            <div class="card-body">
-                <h2 class="card-title"> Consulta Detalhada de Estoque</h2>
-                <form id="consultaForm">
-                    <div class="row">
-                        <div class="col-md-6 mb-3"><label>Tipo de Consulta:</label>
-                            <select class="form-control" id="tipoConsulta" required>
-                                <option value="todos">Todos os Produtos</option>
-                                <option value="codigo">Por Código</option>
-                                <option value="categoria">Por Categoria</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 mb-3"><label>Valor (se aplicável):</label><input type="text" class="form-control" id="valorConsulta" placeholder="Ex: 'COD123' ou 'Eletrônicos'"></div>
+        <div class="filter-card">
+            <h5 class="mb-3 text-primary"><i class="bi bi-funnel"></i> Filtrar Produtos</h5>
+            <form id="consultaForm">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Buscar por</label>
+                        <select class="form-control-modern" id="tipoConsulta">
+                            <option value="todos">Todos os Produtos</option>
+                            <option value="nome">Nome do Produto</option>
+                            <option value="codigo">Código de Barras</option>
+                            <option value="categoria">Categoria</option>
+                        </select>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">Consultar Estoque</button>
-                </form>
-                <h4 class="mt-5 text-primary">Resultado da Consulta</h4>
-                <div id="resultadoConsulta" class="mt-3">Nenhum resultado para exibir.</div>
+                    <div class="col-md-6">
+                        <label class="form-label">Termo da Busca</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control form-control-modern" id="valorConsulta" placeholder="Digite para pesquisar..." disabled>
+                            <button class="btn btn-primary" type="submit" id="btnBuscar">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="button" class="btn btn-outline-secondary w-100" style="height: 50px;" onclick="limparFiltro()">
+                            Limpar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="list-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="text-dark mb-0">Resultados</h4>
+                <span class="badge bg-primary rounded-pill" id="totalResultados">Carregando...</span>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table-modern">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Produto</th>
+                            <th>Categoria</th>
+                            <th>Qtd. Estoque</th>
+                            <th>Valor Unit.</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaResultados">
+                        <tr><td colspan="6" class="text-center py-5 text-muted">Carregando dados...</td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-    </div>
-
-    <footer class="footer">
-        Sistema de Controle de Estoque &copy; 2025 - Todos os direitos reservados a Uniateneu
-    </footer>
+        
+        <footer class="text-center text-muted mt-5 pb-3">
+            <small>Sistema de Controle de Estoque &copy; 2025</small>
+        </footer>
+    </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="app.js"></script> 
+    
     <script>
-        checkAuthState();
+        const API_URL = 'http://localhost:8000/api/v1';
+        let todosProdutos = []; // Cache local para busca rápida
+        let categoriasMap = {};
+
+        function getToken() { return localStorage.getItem('access_token') || sessionStorage.getItem('access_token'); }
+        function parseJwt(token) { try { return JSON.parse(atob(token.split('.')[1])); } catch (e) { return null; } }
+        function logout() { localStorage.clear(); sessionStorage.clear(); window.location.href = 'index.html'; }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = getToken();
+            if (!token) { 
+                alert("Sessão expirada. Faça login novamente.");
+                window.location.href = 'index.html'; 
+                return; 
+            }
+
+            const user = parseJwt(token);
+            if (user) {
+                const nome = user.username || user.user || "Usuário";
+                document.getElementById('loggedUsername').textContent = nome;
+                document.getElementById('loggedUserRole').textContent = user.is_superuser ? 'Administrador' : 'Funcionário';
+                if(nome.length > 0) document.getElementById('userAvatar').textContent = nome.charAt(0).toUpperCase();
+            }
+
+            document.getElementById('menuToggle').addEventListener('click', () => {
+                document.getElementById('sidebar').classList.toggle('active');
+            });
+
+            // Habilita/Desabilita campo de busca
+            document.getElementById('tipoConsulta').addEventListener('change', function() {
+                const input = document.getElementById('valorConsulta');
+                if (this.value === 'todos') {
+                    input.disabled = true;
+                    input.value = '';
+                    filtrarProdutos(); // Busca automática ao selecionar 'Todos'
+                } else {
+                    input.disabled = false;
+                    input.focus();
+                }
+            });
+
+            carregarDadosIniciais();
+        });
+
+        async function carregarDadosIniciais() {
+            await carregarCategorias();
+            await carregarProdutosDoBanco();
+        }
+
+        // 1. Carregar Categorias (para o mapa)
+        async function carregarCategorias() {
+            try {
+                const response = await fetch(`${API_URL}/categorias/`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                if (response.ok) {
+                    const dados = await response.json();
+                    const lista = Array.isArray(dados) ? dados : dados.results || [];
+                    lista.forEach(cat => categoriasMap[cat.id] = cat.nome);
+                }
+            } catch (e) { console.error("Erro categorias", e); }
+        }
+
+        // 2. Carregar Todos os Produtos
+        async function carregarProdutosDoBanco() {
+            try {
+                const response = await fetch(`${API_URL}/produtos/`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+
+                if (response.ok) {
+                    const dados = await response.json();
+                    todosProdutos = Array.isArray(dados) ? dados : dados.results || [];
+                    filtrarProdutos(); // Renderiza a tabela inicial
+                } else {
+                    document.getElementById('tabelaResultados').innerHTML = '<tr><td colspan="6" class="text-center text-danger">Erro ao carregar dados.</td></tr>';
+                }
+            } catch (error) {
+                document.getElementById('tabelaResultados').innerHTML = '<tr><td colspan="6" class="text-center text-danger">Erro de conexão.</td></tr>';
+            }
+        }
+
+        // 3. Filtragem Local (Rápida)
+        document.getElementById('consultaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            filtrarProdutos();
+        });
+
+        function filtrarProdutos() {
+            const tipo = document.getElementById('tipoConsulta').value;
+            const valor = document.getElementById('valorConsulta').value.toLowerCase().trim();
+            const tbody = document.getElementById('tabelaResultados');
+            
+            tbody.innerHTML = '';
+
+            // Filtra o array localmente
+            const resultados = todosProdutos.filter(p => {
+                if (tipo === 'todos') return true;
+                
+                // Mapeia os campos corretos do banco
+                const nome = (p.nome || '').toLowerCase();
+                const codigo = (p.codigo_barras || '').toLowerCase();
+                
+                // Tenta pegar nome da categoria (do objeto ou do mapa)
+                let catNome = '';
+                if (p.categoria_nome) catNome = p.categoria_nome.toLowerCase();
+                else if (categoriasMap[p.categoria]) catNome = categoriasMap[p.categoria].toLowerCase();
+                
+                if (tipo === 'nome') return nome.includes(valor);
+                if (tipo === 'codigo') return codigo.includes(valor);
+                if (tipo === 'categoria') return catNome.includes(valor);
+                
+                return false;
+            });
+
+            document.getElementById('totalResultados').textContent = `${resultados.length} produtos`;
+
+            if (resultados.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-muted">Nenhum produto encontrado com esses critérios.</td></tr>';
+                return;
+            }
+
+            resultados.forEach(p => {
+                const qtd = p.quantidade_estoque || 0;
+                const preco = parseFloat(p.preco_venda || 0).toFixed(2);
+                
+                // Categoria Display
+                let catDisplay = 'Indefinida';
+                if (p.categoria_nome) catDisplay = p.categoria_nome;
+                else if (categoriasMap[p.categoria]) catDisplay = categoriasMap[p.categoria];
+                else if (p.categoria) catDisplay = `ID: ${p.categoria}`;
+
+                // Lógica de Status (Badges)
+                let statusBadge = '<span class="badge bg-success">Em Estoque</span>';
+                if (qtd <= 0) statusBadge = '<span class="badge bg-danger">Esgotado</span>';
+                else if (qtd < 5) statusBadge = '<span class="badge bg-warning text-dark">Estoque Baixo</span>';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><span class="badge bg-light text-dark border">${p.codigo_barras || '-'}</span></td>
+                    <td class="fw-bold">${p.nome}</td>
+                    <td>${catDisplay}</td>
+                    <td class="fw-bold">${qtd}</td>
+                    <td>R$ ${preco}</td>
+                    <td>${statusBadge}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function limparFiltro() {
+            document.getElementById('tipoConsulta').value = 'todos';
+            document.getElementById('valorConsulta').value = '';
+            document.getElementById('valorConsulta').disabled = true;
+            filtrarProdutos();
+        }
     </script>
 </body>
 </html>

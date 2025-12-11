@@ -5,13 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciar Funcionários - Livraria Pro</title>
     
-    <!-- Bootstrap 5.3 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <style>
@@ -25,15 +20,10 @@
             --dark-color: #1a1a2e;
             --light-color: #f8f9fa;
             --gradient-primary: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
-            --gradient-accent: linear-gradient(135deg, #4cc9f0 0%, #06d6a0 100%);
             --sidebar-width: 260px;
         }
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
             font-family: 'Inter', sans-serif;
@@ -43,7 +33,7 @@
             overflow-x: hidden;
         }
         
-        /* ===== SIDEBAR MODERNA ===== */
+        /* ===== SIDEBAR (Menu Lateral) ===== */
         .sidebar {
             background: white;
             width: var(--sidebar-width);
@@ -58,64 +48,32 @@
             transition: all 0.3s ease;
         }
         
-        .sidebar-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid #eee;
-        }
+        .sidebar-header { padding: 1.5rem; border-bottom: 1px solid #eee; }
         
         .sidebar-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            color: var(--dark-color);
+            display: flex; align-items: center; gap: 12px;
+            text-decoration: none; color: var(--dark-color);
         }
         
         .logo-icon {
-            width: 40px;
-            height: 40px;
+            width: 40px; height: 40px;
             background: var(--gradient-primary);
             border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 20px;
         }
         
-        .logo-text {
-            font-family: 'Poppins', sans-serif;
-            font-weight: 700;
-            font-size: 1.3rem;
-            line-height: 1.2;
-        }
+        .logo-text { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.3rem; line-height: 1.2; }
+        .logo-subtitle { font-size: 0.75rem; color: #6c757d; }
         
-        .logo-subtitle {
-            font-size: 0.75rem;
-            color: #6c757d;
-        }
-        
-        .sidebar-menu {
-            padding: 1.5rem 0;
-            flex: 1;
-            overflow-y: auto;
-        }
-        
-        .nav-item {
-            margin: 0.2rem 0;
-        }
+        .sidebar-menu { padding: 1.5rem 0; flex: 1; overflow-y: auto; }
+        .nav-item { margin: 0.2rem 0; }
         
         .nav-link {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 0.9rem 1.5rem;
-            color: #495057;
-            text-decoration: none;
-            border-radius: 0 12px 12px 0;
-            margin-right: 1rem;
-            transition: all 0.3s ease;
-            font-weight: 500;
+            display: flex; align-items: center; gap: 12px;
+            padding: 0.9rem 1.5rem; color: #495057;
+            text-decoration: none; border-radius: 0 12px 12px 0;
+            margin-right: 1rem; transition: all 0.3s ease; font-weight: 500;
         }
         
         .nav-link:hover, .nav-link.active {
@@ -125,520 +83,145 @@
             transform: translateX(5px);
         }
         
-        .nav-link i {
-            font-size: 1.2rem;
-            width: 24px;
-            text-align: center;
-        }
+        .nav-link i { font-size: 1.2rem; width: 24px; text-align: center; }
         
-        .sidebar-footer {
-            padding: 1.5rem;
-            border-top: 1px solid #eee;
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .sidebar-footer { padding: 1.5rem; border-top: 1px solid #eee; }
+        .user-info { display: flex; align-items: center; gap: 12px; }
         
         .user-avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
+            width: 45px; height: 45px; border-radius: 50%;
             background: var(--gradient-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 1.1rem;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 600; font-size: 1.1rem;
         }
         
-        .user-details h6 {
-            margin: 0;
-            font-weight: 600;
-        }
+        .user-details h6 { margin: 0; font-weight: 600; }
+        .user-details small { color: #6c757d; font-size: 0.8rem; }
         
-        .user-details small {
-            color: #6c757d;
-            font-size: 0.8rem;
-        }
+        /* ===== MAIN CONTENT ===== */
+        .main-content { margin-left: var(--sidebar-width); padding: 2rem; min-height: 100vh; }
         
-        /* ===== CONTEÚDO PRINCIPAL ===== */
-        .main-content {
-            margin-left: var(--sidebar-width);
-            padding: 2rem;
-            min-height: 100vh;
-        }
-        
-        /* Header da Página */
         .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;
         }
         
         .page-title h1 {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--dark-color);
-            margin-bottom: 0.5rem;
+            font-family: 'Poppins', sans-serif; font-size: 1.8rem;
+            font-weight: 700; color: var(--dark-color); margin-bottom: 0.5rem;
         }
+        .page-title p { color: #6c757d; margin: 0; }
         
-        .page-title p {
-            color: #6c757d;
-            margin: 0;
-        }
-        
-        .page-actions {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
+        .page-actions { display: flex; gap: 1rem; align-items: center; }
         
         .btn-modern {
-            padding: 0.7rem 1.5rem;
-            border-radius: 10px;
-            border: none;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-            cursor: pointer;
+            padding: 0.7rem 1.5rem; border-radius: 10px; border: none;
+            font-weight: 600; display: flex; align-items: center; gap: 8px;
+            transition: all 0.3s ease; cursor: pointer;
         }
         
-        .btn-primary-modern {
-            background: var(--gradient-primary);
-            color: white;
-        }
+        .btn-primary-modern { background: var(--gradient-primary); color: white; }
+        .btn-primary-modern:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(67, 97, 238, 0.25); }
         
-        .btn-primary-modern:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.25);
-        }
+        .btn-outline-modern { background: transparent; border: 2px solid var(--primary-color); color: var(--primary-color); }
+        .btn-outline-modern:hover { background: var(--primary-color); color: white; }
         
-        .btn-outline-modern {
-            background: transparent;
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-        }
-        
-        .btn-outline-modern:hover {
-            background: var(--primary-color);
-            color: white;
-        }
-        
-        .btn-success-modern {
-            background: var(--gradient-accent);
-            color: white;
-        }
-        
-        .btn-success-modern:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(6, 214, 160, 0.25);
-        }
-        
-        /* ===== CARD DE CADASTRO ===== */
-        .form-card {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-            border: none;
-            margin-bottom: 2rem;
+        /* ===== CARDS ===== */
+        .form-card, .list-card {
+            background: white; border-radius: 16px; padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); border: none; margin-bottom: 2rem;
         }
         
         .card-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #eee;
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #eee;
         }
         
         .card-header-icon {
-            width: 50px;
-            height: 50px;
-            background: rgba(67, 97, 238, 0.1);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: var(--primary-color);
+            width: 50px; height: 50px; background: rgba(67, 97, 238, 0.1);
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; color: var(--primary-color);
         }
         
-        .card-header h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin: 0;
-            color: var(--dark-color);
-        }
+        .card-header h2 { font-size: 1.5rem; font-weight: 600; margin: 0; color: var(--dark-color); }
+        .card-header p { color: #6c757d; margin: 0.3rem 0 0 0; font-size: 0.9rem; }
         
-        .card-header p {
-            color: #6c757d;
-            margin: 0.3rem 0 0 0;
-            font-size: 0.9rem;
-        }
-        
-        /* Formulário */
-        .form-label {
-            font-weight: 600;
-            color: #495057;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .form-label i {
-            color: var(--primary-color);
-        }
+        /* FORM ELEMENTS */
+        .form-label { font-weight: 600; color: #495057; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px; }
+        .form-label i { color: var(--primary-color); }
         
         .form-control-modern {
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            padding: 0.75rem 1rem;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            background: #f8f9fa;
+            border: 2px solid #e9ecef; border-radius: 10px; padding: 0.75rem 1rem;
+            font-size: 1rem; transition: all 0.3s ease; background: #f8f9fa;
         }
-        
         .form-control-modern:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
-            background: white;
+            border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1); background: white;
         }
         
-        .input-group-modern {
-            position: relative;
-        }
+        .input-group-modern { position: relative; }
+        .input-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #6c757d; }
+        .input-with-icon { padding-left: 3rem; }
         
-        .input-icon {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #6c757d;
-        }
+        /* TABLE */
+        .list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .list-header h3 { font-size: 1.3rem; font-weight: 600; margin: 0; color: var(--dark-color); }
         
-        .input-with-icon {
-            padding-left: 3rem;
-        }
+        .badge-modern { padding: 0.5rem 1rem; border-radius: 20px; font-weight: 500; font-size: 0.85rem; }
+        .badge-primary { background: rgba(67, 97, 238, 0.1); color: var(--primary-color); } /* Azul (Comum) */
+        .badge-success { background: rgba(6, 214, 160, 0.1); color: var(--success-color); } /* Verde (Ativo) */
+        .badge-warning { background: rgba(255, 209, 102, 0.1); color: var(--warning-color); } /* Amarelo (Staff) */
+        .badge-danger { background: rgba(239, 71, 111, 0.1); color: var(--danger-color); } /* Vermelho (Admin) */
         
-        .form-text {
-            font-size: 0.85rem;
-            color: #6c757d;
-            margin-top: 0.5rem;
-        }
-        
-        /* ===== LISTA DE FUNCIONÁRIOS ===== */
-        .list-card {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-            border: none;
-        }
-        
-        .list-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        
-        .list-header h3 {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin: 0;
-            color: var(--dark-color);
-        }
-        
-        .badge-modern {
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-weight: 500;
-            font-size: 0.85rem;
-        }
-        
-        .badge-primary {
-            background: rgba(67, 97, 238, 0.1);
-            color: var(--primary-color);
-        }
-        
-        .badge-success {
-            background: rgba(6, 214, 160, 0.1);
-            color: var(--success-color);
-        }
-        
-        .badge-warning {
-            background: rgba(255, 209, 102, 0.1);
-            color: var(--warning-color);
-        }
-        
-        .badge-danger {
-            background: rgba(239, 71, 111, 0.1);
-            color: var(--danger-color);
-        }
-        
-        /* Tabela de Funcionários */
-        .table-modern {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
-        
+        .table-modern { width: 100%; border-collapse: separate; border-spacing: 0; }
         .table-modern thead th {
-            background: #f8f9fa;
-            color: #495057;
-            font-weight: 600;
-            padding: 1rem;
-            border-bottom: 2px solid #eee;
-            text-align: left;
+            background: #f8f9fa; color: #495057; font-weight: 600;
+            padding: 1rem; border-bottom: 2px solid #eee; text-align: left;
         }
-        
-        .table-modern tbody td {
-            padding: 1rem;
-            border-bottom: 1px solid #eee;
-            vertical-align: middle;
-        }
-        
-        .table-modern tbody tr:hover {
-            background: #f8f9fa;
-        }
+        .table-modern tbody td { padding: 1rem; border-bottom: 1px solid #eee; vertical-align: middle; }
+        .table-modern tbody tr:hover { background: #f8f9fa; }
         
         .user-avatar-small {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--gradient-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 1rem;
-        }
-        
-        .role-select {
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            padding: 0.4rem 0.8rem;
-            font-size: 0.9rem;
-            background: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .role-select:focus {
-            border-color: var(--primary-color);
-            outline: none;
+            width: 40px; height: 40px; border-radius: 50%;
+            background: var(--gradient-primary); display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 600; font-size: 1rem;
         }
         
         .btn-action {
-            padding: 0.4rem 0.8rem;
-            border-radius: 8px;
-            border: none;
-            font-size: 0.85rem;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            padding: 0.4rem 0.8rem; border-radius: 8px; border: none;
+            font-size: 0.85rem; font-weight: 500; display: inline-flex; align-items: center; gap: 5px;
+            cursor: pointer; transition: all 0.3s ease;
         }
+        .btn-action-delete { background: rgba(239, 71, 111, 0.1); color: var(--danger-color); }
+        .btn-action-delete:hover { background: var(--danger-color); color: white; }
         
-        .btn-action-edit {
-            background: rgba(67, 97, 238, 0.1);
-            color: var(--primary-color);
-        }
+        /* ALERTS */
+        .alert-modern { border-radius: 12px; border: none; padding: 1rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 12px; }
+        .alert-success-modern { background: rgba(6, 214, 160, 0.1); color: var(--success-color); border-left: 4px solid var(--success-color); }
+        .alert-danger-modern { background: rgba(239, 71, 111, 0.1); color: var(--danger-color); border-left: 4px solid var(--danger-color); }
         
-        .btn-action-edit:hover {
-            background: var(--primary-color);
-            color: white;
-        }
-        
-        .btn-action-delete {
-            background: rgba(239, 71, 111, 0.1);
-            color: var(--danger-color);
-        }
-        
-        .btn-action-delete:hover {
-            background: var(--danger-color);
-            color: white;
-        }
-        
-        /* ===== MODAL ===== */
-        .modal-modern .modal-content {
-            border-radius: 16px;
-            border: none;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        }
-        
-        .modal-modern .modal-header {
-            border-bottom: 1px solid #eee;
-            padding: 1.5rem;
-        }
-        
-        .modal-modern .modal-body {
-            padding: 1.5rem;
-        }
-        
-        .modal-modern .modal-footer {
-            border-top: 1px solid #eee;
-            padding: 1rem 1.5rem;
-        }
-        
-        /* ===== FOOTER ===== */
-        .footer {
-            text-align: center;
-            padding: 1.5rem;
-            color: #6c757d;
-            font-size: 0.9rem;
-            border-top: 1px solid #eee;
-            margin-top: 2rem;
-        }
-        
-        /* ===== RESPONSIVIDADE ===== */
+        .loading { display: flex; justify-content: center; align-items: center; min-height: 200px; }
+        .spinner { width: 50px; height: 50px; border: 3px solid #f3f3f3; border-top: 3px solid var(--primary-color); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
         @media (max-width: 992px) {
-            .sidebar {
-                transform: translateX(-100%);
-                width: 280px;
-            }
-            
-            .sidebar.active {
-                transform: translateX(0);
-            }
-            
-            .main-content {
-                margin-left: 0;
-                padding: 1rem;
-            }
-            
-            .menu-toggle {
-                display: block !important;
-            }
+            .sidebar { transform: translateX(-100%); width: 280px; }
+            .sidebar.active { transform: translateX(0); }
+            .main-content { margin-left: 0; padding: 1rem; }
+            .menu-toggle { display: block !important; }
         }
-        
-        @media (max-width: 768px) {
-            .page-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .page-actions {
-                width: 100%;
-                justify-content: space-between;
-            }
-            
-            .table-responsive {
-                overflow-x: auto;
-            }
-        }
-        
-        @media (max-width: 576px) {
-            .page-actions {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-            
-            .btn-modern {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .form-card, .list-card {
-                padding: 1.5rem;
-            }
-        }
-        
-        /* ===== MENU TOGGLE (MOBILE) ===== */
         .menu-toggle {
-            display: none;
-            position: fixed;
-            top: 1rem;
-            left: 1rem;
-            z-index: 1001;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            width: 45px;
-            height: 45px;
-            border-radius: 10px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
-        }
-        
-        /* ===== LOADING ===== */
-        .loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 200px;
-        }
-        
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid var(--primary-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* ===== MENSAGENS ===== */
-        .alert-modern {
-            border-radius: 12px;
-            border: none;
-            padding: 1rem 1.5rem;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .alert-success-modern {
-            background: rgba(6, 214, 160, 0.1);
-            color: var(--success-color);
-            border-left: 4px solid var(--success-color);
-        }
-        
-        .alert-danger-modern {
-            background: rgba(239, 71, 111, 0.1);
-            color: var(--danger-color);
-            border-left: 4px solid var(--danger-color);
-        }
-        
-        .alert-warning-modern {
-            background: rgba(255, 209, 102, 0.1);
-            color: var(--warning-color);
-            border-left: 4px solid var(--warning-color);
+            display: none; position: fixed; top: 1rem; left: 1rem; z-index: 1001;
+            background: var(--primary-color); color: white; border: none; width: 45px; height: 45px;
+            border-radius: 10px; font-size: 1.2rem; cursor: pointer; box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
         }
     </style>
 </head>
 <body>
-    <!-- Botão Menu Toggle (Mobile) -->
     <button class="menu-toggle" id="menuToggle">
         <i class="bi bi-list"></i>
     </button>
     
-    <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
-        <!-- Logo -->
         <div class="sidebar-header">
             <a href="dashboard.html" class="sidebar-logo">
                 <div class="logo-icon">
@@ -651,79 +234,85 @@
             </a>
         </div>
         
-        <!-- Menu -->
         <nav class="sidebar-menu">
             <ul class="nav flex-column">
-                <li class="nav-item all-logged">
+                <li class="nav-item">
                     <a class="nav-link" href="dashboard.html">
                         <i class="bi bi-speedometer2"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
-                <li class="nav-item admin">
+                
+                <li class="nav-item">
                     <a class="nav-link active" href="cadastro-pessoas.html">
                         <i class="bi bi-people"></i>
                         <span>Funcionários</span>
                     </a>
                 </li>
-                <li class="nav-item admin">
+                
+                <li class="nav-item">
                     <a class="nav-link" href="cadastro-fornecedores.html">
                         <i class="bi bi-truck"></i>
                         <span>Fornecedores</span>
                     </a>
                 </li>
-                <li class="nav-item all-logged">
+
+                <li class="nav-item">
                     <a class="nav-link" href="cadastro-produtos.html">
-                        <i class="bi bi-book"></i>
-                        <span>Cadastrar Livros</span>
+                        <i class="bi bi-box-seam"></i>
+                        <span>Produtos</span>
                     </a>
                 </li>
-                <li class="nav-item all-logged">
+                <li class="nav-item">
                     <a class="nav-link" href="entrada-produtos.html">
                         <i class="bi bi-arrow-down-circle"></i>
-                        <span>Entrada de Livros</span>
+                        <span>Entrada</span>
                     </a>
                 </li>
-                <li class="nav-item all-logged">
+                <li class="nav-item">
                     <a class="nav-link" href="saida-produtos.html">
                         <i class="bi bi-arrow-up-circle"></i>
-                        <span>Venda de Livros</span>
+                        <span>Saída</span>
                     </a>
                 </li>
-                <li class="nav-item all-logged">
+                <li class="nav-item">
                     <a class="nav-link" href="consulta-estoque.html">
                         <i class="bi bi-search"></i>
-                        <span>Consultar Acervo</span>
+                        <span>Estoque</span>
                     </a>
                 </li>
-                <li class="nav-item admin">
+                 <li class="nav-item">
                     <a class="nav-link" href="relatorios.html">
-                        <i class="bi bi-graph-up"></i>
+                        <i class="bi bi-file-earmark-bar-graph"></i>
                         <span>Relatórios</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item mt-3">
+                    <a class="nav-link text-danger" href="#" onclick="logout()">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span>Sair</span>
                     </a>
                 </li>
             </ul>
         </nav>
         
-        <!-- Footer da Sidebar (Info do Usuário) -->
         <div class="sidebar-footer">
             <div class="user-info">
-                <div class="user-avatar" id="userAvatar">A</div>
+                <div class="user-avatar" id="userAvatar">U</div>
                 <div class="user-details">
                     <h6 id="loggedUsername">Carregando...</h6>
-                    <small id="loggedUserRole">Livraria Pro</small>
+                    <small id="loggedUserRole">...</small>
                 </div>
             </div>
         </div>
     </aside>
     
-    <!-- Conteúdo Principal -->
     <main class="main-content">
-        <!-- Header -->
         <div class="page-header">
             <div class="page-title">
                 <h1>Gerenciar Funcionários</h1>
-                <p>Cadastre e gerencie os funcionários da livraria</p>
+                <p>Lista de acessos do sistema</p>
             </div>
             <div class="page-actions">
                 <button class="btn-modern btn-outline-modern" onclick="window.location.href='dashboard.html'">
@@ -737,538 +326,362 @@
             </div>
         </div>
         
-        <!-- Mensagens -->
         <div id="messageContainer"></div>
         
-        <!-- Card de Cadastro -->
         <div class="form-card">
             <div class="card-header">
                 <div class="card-header-icon">
                     <i class="bi bi-person-plus"></i>
                 </div>
                 <div>
-                    <h2>Cadastrar Novo Funcionário</h2>
-                    <p>Preencha os dados para criar uma nova conta de funcionário</p>
+                    <h2>Cadastrar Novo Usuário</h2>
+                    <p>Crie contas para seus funcionários ou novos administradores</p>
                 </div>
             </div>
             
             <form id="cadastroForm">
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label for="nome" class="form-label">
-                            <i class="bi bi-person"></i>
-                            Nome de Usuário
-                        </label>
+                        <label for="nome" class="form-label"><i class="bi bi-person"></i> Nome de Usuário</label>
                         <div class="input-group-modern">
                             <i class="bi bi-person input-icon"></i>
-                            <input type="text" 
-                                   class="form-control-modern input-with-icon" 
-                                   id="nome" 
-                                   placeholder="Digite o nome do funcionário"
-                                   required>
+                            <input type="text" class="form-control-modern input-with-icon" id="nome" placeholder="Username (login)" required>
                         </div>
                     </div>
                     
                     <div class="col-md-6">
-                        <label for="email" class="form-label">
-                            <i class="bi bi-envelope"></i>
-                            E-mail
-                        </label>
+                        <label for="email" class="form-label"><i class="bi bi-envelope"></i> E-mail</label>
                         <div class="input-group-modern">
                             <i class="bi bi-envelope input-icon"></i>
-                            <input type="email" 
-                                   class="form-control-modern input-with-icon" 
-                                   id="email" 
-                                   placeholder="funcionario@livraria.com"
-                                   required>
+                            <input type="email" class="form-control-modern input-with-icon" id="email" placeholder="email@exemplo.com" required>
                         </div>
                     </div>
                     
-                    <div class="col-md-4">
-                        <label for="idade" class="form-label">
-                            <i class="bi bi-calendar"></i>
-                            Idade
-                        </label>
-                        <input type="number" 
-                               class="form-control-modern" 
-                               id="idade" 
-                               min="18" 
-                               max="70"
-                               placeholder="18"
-                               required>
-                        <div class="form-text">Mínimo 18 anos</div>
-                    </div>
-                    
-                    <div class="col-md-4">
-                        <label for="senha" class="form-label">
-                            <i class="bi bi-lock"></i>
-                            Senha
-                        </label>
+                    <div class="col-md-6">
+                        <label for="senha" class="form-label"><i class="bi bi-lock"></i> Senha</label>
                         <div class="input-group-modern">
                             <i class="bi bi-key input-icon"></i>
-                            <input type="password" 
-                                   class="form-control-modern input-with-icon" 
-                                   id="senha" 
-                                   minlength="6"
-                                   placeholder="Crie uma senha"
-                                   required>
-                            <button type="button" class="btn btn-sm position-absolute end-0 top-50 translate-middle-y me-2" style="background: none; border: none; color: #6c757d;" onclick="togglePassword('senha')">
-                                <i class="bi bi-eye"></i>
+                            <input type="password" class="form-control-modern input-with-icon" id="senha" minlength="6" placeholder="Crie uma senha" required>
+                            <button type="button" class="btn btn-sm position-absolute end-0 top-50 translate-middle-y me-2" onclick="togglePassword('senha')">
+                                <i class="bi bi-eye text-muted"></i>
                             </button>
                         </div>
-                        <div class="form-text">Mínimo 6 caracteres</div>
                     </div>
                     
-                    <div class="col-md-4">
-                        <label for="cargo" class="form-label">
-                            <i class="bi bi-briefcase"></i>
-                            Cargo Inicial
-                        </label>
+                    <div class="col-md-6">
+                        <label for="cargo" class="form-label"><i class="bi bi-briefcase"></i> Nível de Acesso</label>
                         <select class="form-control-modern" id="cargo" required>
-                            <option value="usuario">Atendente</option>
-                            <option value="funcionario">Gerente</option>
-                            <option value="admin" disabled>Administrador</option>
+                            <option value="usuario">Funcionário Comum (Atendente)</option>
+                            <option value="funcionario">Gerente (Staff)</option>
+                            <option value="admin">Administrador (Total)</option>
                         </select>
-                        <div class="form-text">Novos usuários começam como Atendente</div>
                     </div>
                 </div>
                 
                 <div class="mt-4">
-                    <button type="submit" class="btn-modern btn-success-modern w-100">
-                        <i class="bi bi-person-check"></i>
-                        Cadastrar Novo Funcionário
+                    <button type="submit" class="btn btn-success w-100 py-2 fw-bold" style="font-size: 1.1rem;">
+                        <i class="bi bi-check-circle"></i> Cadastrar Usuário
                     </button>
                 </div>
             </form>
         </div>
         
-        <!-- Lista de Funcionários -->
         <div class="list-card">
             <div class="list-header">
                 <div>
-                    <h3>Funcionários Cadastrados</h3>
-                    <p class="text-muted mb-0">Gerencie permissões e acessos</p>
+                    <h3>Usuários do Sistema</h3>
+                    <p class="text-muted mb-0">Listando todos os níveis de acesso</p>
                 </div>
-                <span class="badge-modern badge-primary" id="totalFuncionarios">0 funcionários</span>
+                <span class="badge-modern badge-primary" id="totalFuncionarios">Carregando...</span>
             </div>
             
             <div class="table-responsive">
                 <table class="table-modern">
                     <thead>
                         <tr>
-                            <th>Funcionário</th>
+                            <th>Usuário</th>
                             <th>E-mail</th>
-                            <th>Idade</th>
-                            <th>Cargo Atual</th>
+                            <th>Nível de Acesso</th>
                             <th>Status</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody id="listaPessoas">
-                        <!-- Dados serão preenchidos por JavaScript -->
                         <tr>
-                            <td colspan="6" class="text-center py-5">
-                                <div class="loading">
-                                    <div class="spinner"></div>
-                                </div>
+                            <td colspan="5" class="text-center py-5">
+                                <div class="loading"><div class="spinner"></div></div>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            
-            <div class="mt-4 text-center">
-                <small class="text-muted">
-                    <i class="bi bi-info-circle"></i>
-                    Apenas administradores podem alterar cargos. Clique nos botões para promover/rebaixar funcionários.
-                </small>
-            </div>
         </div>
         
-        <!-- Footer -->
         <footer class="footer">
-            <p>Sistema de Controle de Estoque para Livraria &copy; 2025 - Livraria Pro</p>
-            <small>Gerenciamento de Funcionários</small>
+            <p>Sistema de Controle de Estoque &copy; 2025</p>
         </footer>
     </main>
     
-    <!-- Modal de Ajuda -->
     <div class="modal fade modal-modern" id="helpModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="bi bi-question-circle text-primary me-2"></i>
-                        Ajuda - Gerenciamento de Funcionários
-                    </h5>
+                    <h5 class="modal-title">Legenda de Níveis</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <h6>Cargos e Permissões:</h6>
-                    <ul class="mb-3">
-                        <li><strong>Atendente (usuário):</strong> Apenas consulta o estoque</li>
-                        <li><strong>Gerente (funcionário):</strong> Gerencia livros e vendas</li>
-                        <li><strong>Administrador (admin):</strong> Acesso total ao sistema</li>
+                    <ul>
+                        <li><span class="badge badge-primary">Atendente</span> Apenas visualiza e opera o básico.</li>
+                        <li><span class="badge badge-warning text-dark">Gerente</span> Pode gerenciar produtos.</li>
+                        <li><span class="badge badge-danger">Admin</span> Acesso total ao sistema.</li>
                     </ul>
-                    
-                    <h6>Instruções:</h6>
-                    <ol>
-                        <li>Preencha todos os campos do formulário</li>
-                        <li>Novos funcionários começam como "Atendente"</li>
-                        <li>Use os botões na tabela para alterar cargos</li>
-                        <li>Apenas administradores podem promover para admin</li>
-                    </ol>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-modern btn-outline-modern" data-bs-dismiss="modal">Fechar</button>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Seu JavaScript -->
-    <script src="app.js"></script>
-    
     <script>
-        // Scripts específicos da página de funcionários
+        // === URL DA API ===
+        const API_BASE_URL = 'http://localhost:8000/api/v1';
         
-        // Menu Toggle (Mobile)
-        document.getElementById('menuToggle').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('active');
-        });
-        
-        // Fecha menu ao clicar fora (mobile)
-        document.addEventListener('click', function(event) {
-            const sidebar = document.getElementById('sidebar');
-            const menuToggle = document.getElementById('menuToggle');
-            
-            if (window.innerWidth <= 992 && 
-                !sidebar.contains(event.target) && 
-                !menuToggle.contains(event.target) && 
-                sidebar.classList.contains('active')) {
-                sidebar.classList.remove('active');
+        // 1. Decodificar Token
+        function parseJwt(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                return JSON.parse(jsonPayload);
+            } catch (e) {
+                return null;
             }
-        });
-        
-        // Inicialização da página
+        }
+
+        function getToken() {
+            return localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
+        }
+
+        function logout() {
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = 'index.html';
+        }
+
+        // 2. Inicialização
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('👥 Página de funcionários inicializada');
+            const token = getToken();
             
-            // Verifica autenticação
-            checkAuthState();
-            
-            // Atualiza informações do usuário
-            updateUserInfo();
-            
-            // Carrega lista de funcionários
-            updateListaPessoas();
-            
-            // Configura formulário
-            setupForm();
-        });
-        
-        // Atualiza informações do usuário na sidebar
-        function updateUserInfo() {
-            const userRole = JSON.parse(sessionStorage.getItem('userRole'));
-            const username = sessionStorage.getItem('username');
-            
-            if (username) {
-                document.getElementById('loggedUsername').textContent = username;
-                document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
-            }
-            
-            if (userRole) {
-                const roleText = userRole.role === 'admin' ? 'ADMINISTRADOR' :
-                               userRole.role === 'funcionario' ? 'GERENTE' : 'ATENDENTE';
-                document.getElementById('loggedUserRole').textContent = roleText;
-                
-                // Se não for admin, esconde a página
-                if (userRole.role !== 'admin') {
-                    showMessage('Acesso restrito a administradores!', 'danger');
-                    setTimeout(() => {
-                        window.location.href = 'dashboard.html';
-                    }, 2000);
-                    return;
-                }
-            }
-        }
-        
-        // Configura o formulário
-        function setupForm() {
-            const form = document.getElementById('cadastroForm');
-            
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const nome = document.getElementById('nome').value.trim();
-                const email = document.getElementById('email').value.trim();
-                const idade = parseInt(document.getElementById('idade').value);
-                const senha = document.getElementById('senha').value;
-                const cargo = document.getElementById('cargo').value;
-                
-                // Validações
-                if (!nome || !email || !idade || !senha) {
-                    showMessage('Preencha todos os campos!', 'warning');
-                    return;
-                }
-                
-                if (idade < 18) {
-                    showMessage('A idade mínima é 18 anos!', 'warning');
-                    return;
-                }
-                
-                if (senha.length < 6) {
-                    showMessage('A senha deve ter pelo menos 6 caracteres!', 'warning');
-                    return;
-                }
-                
-                // Simula cadastro (substitua por chamada à API)
-                simulateCadastroFuncionario(nome, email, idade, senha, cargo);
-                
-                // Limpa formulário
-                form.reset();
-            });
-        }
-        
-        // Simula cadastro de funcionário
-        function simulateCadastroFuncionario(nome, email, idade, senha, cargo) {
-            // Mostra loading
-            const submitBtn = document.querySelector('#cadastroForm button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Cadastrando...';
-            submitBtn.disabled = true;
-            
-            // Simula delay da API
-            setTimeout(() => {
-                // Aqui você faria a chamada à API real
-                // Por enquanto, apenas adiciona à lista local
-                
-                // Recupera lista atual
-                let pessoas = JSON.parse(localStorage.getItem('pessoas')) || [];
-                
-                // Adiciona novo funcionário
-                const novoFuncionario = {
-                    id: Date.now(),
-                    nome: nome,
-                    email: email,
-                    idade: idade,
-                    senha: senha,
-                    role: cargo,
-                    ativo: true,
-                    criadoEm: new Date().toISOString()
-                };
-                
-                pessoas.push(novoFuncionario);
-                localStorage.setItem('pessoas', JSON.stringify(pessoas));
-                
-                // Atualiza lista
-                updateListaPessoas();
-                
-                // Mostra mensagem de sucesso
-                showMessage(`Funcionário ${nome} cadastrado com sucesso como ${getRoleName(cargo)}!`, 'success');
-                
-                // Restaura botão
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-                
-            }, 1500);
-        }
-        
-        // Atualiza lista de funcionários
-        function updateListaPessoas() {
-            const tbody = document.getElementById('listaPessoas');
-            const pessoas = JSON.parse(localStorage.getItem('pessoas')) || [];
-            
-            // Atualiza contador
-            document.getElementById('totalFuncionarios').textContent = `${pessoas.length} funcionários`;
-            
-            if (pessoas.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="6" class="text-center py-5">
-                            <i class="bi bi-people text-muted fs-1 mb-3"></i>
-                            <p class="text-muted">Nenhum funcionário cadastrado ainda</p>
-                            <small class="text-muted">Use o formulário acima para cadastrar o primeiro funcionário</small>
-                        </td>
-                    </tr>
-                `;
+            if (!token) {
+                alert("Sessão expirada. Faça login novamente.");
+                window.location.href = 'index.html';
                 return;
             }
-            
-            let html = '';
-            
-            pessoas.forEach(pessoa => {
-                const roleName = getRoleName(pessoa.role);
-                const roleClass = getRoleClass(pessoa.role);
+
+            // Atualiza Sidebar
+            const userData = parseJwt(token);
+            if (userData) {
+                document.getElementById('loggedUsername').textContent = userData.username || "Usuário";
+                document.getElementById('userAvatar').textContent = (userData.username || "U").charAt(0).toUpperCase();
                 
+                let role = "Atendente";
+                if (userData.is_superuser) role = "Admin";
+                else if (userData.is_staff) role = "Gerente";
+                
+                document.getElementById('loggedUserRole').textContent = role;
+            }
+
+            fetchUsersFromDB();
+
+            // Menu mobile
+            document.getElementById('menuToggle').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('active');
+            });
+        });
+
+        // 3. BUSCAR LISTA (GET)
+        async function fetchUsersFromDB() {
+            const token = getToken();
+            try {
+                const response = await fetch(`${API_BASE_URL}/users/all/`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const users = await response.json();
+                    renderUsersTable(users);
+                } else {
+                    console.error("Erro API:", response.status);
+                    const tbody = document.getElementById('listaPessoas');
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Erro ao carregar lista de usuários. Tente relogar.</td></tr>';
+                }
+            } catch (error) {
+                console.error("Erro Conexão:", error);
+                const tbody = document.getElementById('listaPessoas');
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Erro de conexão com o servidor.</td></tr>';
+            }
+        }
+
+        // 4. RENDERIZAR TABELA
+        function renderUsersTable(users) {
+            const tbody = document.getElementById('listaPessoas');
+            document.getElementById('totalFuncionarios').textContent = `${users.length} cadastros`;
+            
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center">Nenhum usuário cadastrado.</td></tr>';
+                return;
+            }
+
+            let html = '';
+            users.forEach(user => {
+                // Lógica de Cores e Nomes
+                let roleName = 'Atendente / Usuário';
+                let roleClass = 'badge-primary'; // Azul para comuns
+                
+                if (user.is_superuser) {
+                    roleName = 'Administrador';
+                    roleClass = 'badge-danger'; // Vermelho
+                } else if (user.is_staff) {
+                    roleName = 'Gerente';
+                    roleClass = 'badge-warning'; // Amarelo
+                }
+
+                const statusBadge = user.is_active ? 
+                    '<span class="badge bg-success">Ativo</span>' : 
+                    '<span class="badge bg-danger">Inativo</span>';
+
                 html += `
                     <tr>
                         <td>
                             <div class="d-flex align-items-center gap-2">
-                                <div class="user-avatar-small">
-                                    ${pessoa.nome.charAt(0).toUpperCase()}
-                                </div>
+                                <div class="user-avatar-small">${user.username.charAt(0).toUpperCase()}</div>
                                 <div>
-                                    <strong>${pessoa.nome}</strong>
-                                    <br>
-                                    <small class="text-muted">ID: ${pessoa.id}</small>
+                                    <strong>${user.username}</strong>
+                                    <br><small class="text-muted">ID: ${user.id}</small>
                                 </div>
                             </div>
                         </td>
-                        <td>${pessoa.email || 'Não informado'}</td>
-                        <td>${pessoa.idade} anos</td>
+                        <td>${user.email || '-'}</td>
+                        <td><span class="badge-modern ${roleClass}">${roleName}</span></td>
+                        <td>${statusBadge}</td>
                         <td>
-                            <span class="badge-modern ${roleClass}">${roleName}</span>
-                        </td>
-                        <td>
-                            ${pessoa.ativo ? 
-                                '<span class="badge bg-success">Ativo</span>' : 
-                                '<span class="badge bg-danger">Inativo</span>'}
-                        </td>
-                        <td>
-                            <div class="d-flex gap-2">
-                                ${pessoa.role !== 'admin' ? `
-                                    <button class="btn-action btn-action-edit" onclick="promoteUser(${pessoa.id})">
-                                        <i class="bi bi-arrow-up"></i>
-                                        Promover
-                                    </button>
-                                ` : ''}
-                                
-                                ${pessoa.role !== 'usuario' ? `
-                                    <button class="btn-action btn-action-edit" onclick="demoteUser(${pessoa.id})">
-                                        <i class="bi bi-arrow-down"></i>
-                                        Rebaixar
-                                    </button>
-                                ` : ''}
-                                
-                                <button class="btn-action btn-action-delete" onclick="deleteUser(${pessoa.id})">
-                                    <i class="bi bi-trash"></i>
-                                    Remover
-                                </button>
-                            </div>
+                            <button class="btn-action btn-action-delete" onclick="deleteUserDB(${user.id})">
+                                <i class="bi bi-trash"></i> Remover
+                            </button>
                         </td>
                     </tr>
                 `;
             });
-            
             tbody.innerHTML = html;
         }
-        
-        // Funções auxiliares
-        function getRoleName(role) {
-            const roles = {
-                'admin': 'Administrador',
-                'funcionario': 'Gerente',
-                'usuario': 'Atendente'
-            };
-            return roles[role] || role;
-        }
-        
-        function getRoleClass(role) {
-            const classes = {
-                'admin': 'badge-danger',
-                'funcionario': 'badge-warning',
-                'usuario': 'badge-success'
-            };
-            return classes[role] || 'badge-primary';
-        }
-        
-        function showMessage(text, type = 'info') {
-            const container = document.getElementById('messageContainer');
+
+        // 5. CADASTRAR (POST)
+        document.getElementById('cadastroForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
             
-            let icon, bgColor, borderColor, textColor;
+            const token = getToken();
+            const submitBtn = this.querySelector('button[type="submit"]');
             
-            switch(type) {
-                case 'success':
-                    icon = 'check-circle';
-                    bgColor = 'rgba(6, 214, 160, 0.1)';
-                    borderColor = '#06d6a0';
-                    textColor = '#06a67e';
-                    break;
-                case 'warning':
-                    icon = 'exclamation-triangle';
-                    bgColor = 'rgba(255, 209, 102, 0.1)';
-                    borderColor = '#ffd166';
-                    textColor = '#d4a430';
-                    break;
-                case 'danger':
-                    icon = 'times-circle';
-                    bgColor = 'rgba(239, 71, 111, 0.1)';
-                    borderColor = '#ef476f';
-                    textColor = '#d4335c';
-                    break;
-                default:
-                    icon = 'info-circle';
-                    bgColor = 'rgba(67, 97, 238, 0.1)';
-                    borderColor = '#4361ee';
-                    textColor = '#4361ee';
+            const username = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('senha').value;
+            const cargo = document.getElementById('cargo').value;
+
+            // Define permissões
+            let is_staff = false;
+            let is_superuser = false;
+
+            if (cargo === 'funcionario') { 
+                is_staff = true; 
+            } else if (cargo === 'admin') { 
+                is_staff = true; 
+                is_superuser = true; 
             }
-            
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'alert-modern';
-            messageDiv.style.cssText = `
-                background: ${bgColor};
-                color: ${textColor};
-                border-left: 4px solid ${borderColor};
-            `;
-            messageDiv.innerHTML = `
-                <i class="bi bi-${icon} fs-5"></i>
-                <div>${text}</div>
-            `;
-            
-            container.appendChild(messageDiv);
-            
-            // Remove após 5 segundos
-            setTimeout(() => {
-                if (messageDiv.parentNode) {
-                    messageDiv.remove();
+
+            const payload = {
+                username: username,
+                email: email,
+                password: password,
+                is_staff: is_staff,
+                is_superuser: is_superuser
+            };
+
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = 'Salvando...';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/users/admin-create/`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showMessage("Usuário cadastrado com sucesso!", "success");
+                    document.getElementById('cadastroForm').reset();
+                    fetchUsersFromDB(); 
+                } else {
+                    showMessage(`Erro: ${data.error || 'Falha ao salvar'}`, "danger");
                 }
-            }, 5000);
-        }
-        
-        function togglePassword(inputId) {
-            const input = document.getElementById(inputId);
-            const button = input.nextElementSibling;
-            const icon = button.querySelector('i');
-            
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.remove('bi-eye');
-                icon.classList.add('bi-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.remove('bi-eye-slash');
-                icon.classList.add('bi-eye');
+            } catch (error) {
+                showMessage("Erro de conexão.", "danger");
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
             }
+        });
+
+        // 6. DELETAR (DELETE)
+        async function deleteUserDB(userId) {
+            if (!confirm("Tem certeza que deseja apagar este usuário?")) return;
+
+            const token = getToken();
+            try {
+                const response = await fetch(`${API_BASE_URL}/users/${userId}/`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    showMessage("Usuário removido.", "success");
+                    fetchUsersFromDB();
+                } else {
+                    showMessage("Erro ao remover.", "danger");
+                }
+            } catch (error) {
+                showMessage("Erro de conexão.", "danger");
+            }
+        }
+
+        // Utilitários
+        function showMessage(text, type) {
+            const container = document.getElementById('messageContainer');
+            const div = document.createElement('div');
+            div.className = `alert-modern alert-${type}-modern`;
+            div.innerHTML = `<i class="bi bi-info-circle"></i> ${text}`;
+            container.appendChild(div);
+            setTimeout(() => div.remove(), 4000);
+        }
+
+        function togglePassword(id) {
+            const input = document.getElementById(id);
+            input.type = input.type === 'password' ? 'text' : 'password';
         }
         
         function showHelp() {
-            const helpModal = new bootstrap.Modal(document.getElementById('helpModal'));
-            helpModal.show();
-        }
-        
-        // Funções do app.js que precisamos
-        function promoteUser(userId) {
-            // Implementação do app.js
-            console.log('Promovendo usuário:', userId);
-            // Chame a função do app.js aqui
-        }
-        
-        function demoteUser(userId) {
-            // Implementação do app.js
-            console.log('Rebaixando usuário:', userId);
-            // Chame a função do app.js aqui
-        }
-        
-        function deleteUser(userId) {
-            if (confirm('Tem certeza que deseja remover este funcionário?')) {
-                // Implementação do app.js
-                console.log('Removendo usuário:', userId);
-                // Chame a função do app.js aqui
-            }
+            new bootstrap.Modal(document.getElementById('helpModal')).show();
         }
     </script>
 </body>

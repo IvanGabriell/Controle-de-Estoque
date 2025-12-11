@@ -134,12 +134,16 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ==============================================================================
-# 5. DJANGO REST FRAMEWORK
+# 5. DJANGO REST FRAMEWORK (ALTERADO AQUI)
 # ==============================================================================
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        # Autenticação para o Site/App (Token)
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        
+        # Autenticação para o Navegador (Login Admin) - ADICIONADO AGORA
+        'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -166,7 +170,6 @@ if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True  # Permite todas as origens
     CORS_ALLOW_CREDENTIALS = True
     
-    # 🚨 CORREÇÃO: Adiciona Authorization, necessário para JWT
     CORS_ALLOW_HEADERS = [
         'accept', 
         'accept-encoding', 
@@ -204,7 +207,7 @@ else:
     CORS_ALLOW_METHODS = [
         'DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT',
     ]
-    # 🚨 CORREÇÃO: Adiciona Authorization, necessário para JWT
+    
     CORS_ALLOW_HEADERS = [
         'accept', 
         'accept-encoding', 

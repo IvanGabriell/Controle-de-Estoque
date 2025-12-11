@@ -1,13 +1,16 @@
 from rest_framework import viewsets, status
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.response import Response
 
-from django.db.models import F
+from django.db.models import F, Count, Sum
 from django.db import transaction
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
+from django.utils import timezone
 
 from .models import Categoria, Fornecedor, Produto, MovimentacaoEstoque
 from .serializers import (
@@ -16,11 +19,40 @@ from .serializers import (
     ProdutoSerializer,
     MovimentacaoEstoqueSerializer,
     MovimentacaoActionSerializer,
-    UserSerializer
+    UserSerializer,
+    RegisterSerializer
 )
 
 # ==============================================================================
-# VIEWS DE AUTENTICAÇÃO E USUÁRIOS
+# 1. CUSTOM JWT AUTHENTICATION (CORREÇÃO DO ERRO DO DOCKER)
+# ==============================================================================
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    """
+    Personaliza o token JWT para incluir mais dados além do ID
+    """
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Adiciona campos personalizados ao token
+        token['username'] = user.username
+        token['email'] = user.email
+        token['is_superuser'] = user.is_superuser
+        token['first_name'] = user.first_name
+
+        return token
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    """
+    View que usa o serializador personalizado.
+    É ISSO QUE O SEU URLS.PY ESTAVA PROCURANDO E NÃO ACHAVA.
+    """
+    serializer_class = CustomTokenObtainPairSerializer
+
+
+# ==============================================================================
+# 2. VIEWS DE AUTENTICAÇÃO E USUÁRIOS
 # ==============================================================================
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -32,7 +64,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         # Apenas superusers podem ver todos os usuários
         if self.request.user.is_superuser:
-            return User.objects.all()
+            return User.objects.all().order_by('id')
         # Usuários normais veem apenas a si mesmos
         return User.objects.filter(id=self.request.user.id)
 
@@ -40,7 +72,6 @@ class UserViewSet(viewsets.ModelViewSet):
 @permission_classes([AllowAny])
 def register_view(request):
     """Registro de novos usuários (público)"""
-    from .serializers import RegisterSerializer
     serializer = RegisterSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
@@ -86,7 +117,7 @@ def create_user_admin(request):
             status=status.HTTP_400_BAD_REQUEST
         )
     
-    # Segurança: não permitir criar outro superuser
+    # Segurança: não permitir criar outro superuser se quem pede não for superuser (redundante mas seguro)
     if is_superuser and not request.user.is_superuser:
         return Response(
             {'error': 'Não autorizado a criar administradores'},
@@ -158,13 +189,6 @@ def update_user_role(request, user_id):
         is_staff = request.data.get('is_staff', user.is_staff)
         is_superuser = request.data.get('is_superuser', user.is_superuser)
         
-        # Segurança adicional
-        if is_superuser and not request.user.is_superuser:
-            return Response(
-                {'error': 'Não autorizado a criar administradores'},
-                status=status.HTTP_403_FORBIDDEN
-            )
-        
         user.is_staff = is_staff
         user.is_superuser = is_superuser
         user.save()
@@ -187,7 +211,6 @@ def update_user_role(request, user_id):
 @permission_classes([IsAuthenticated])
 def delete_user(request, user_id):
     """Remove um usuário (apenas administradores)"""
-    # Verifica se é administrador
     if not request.user.is_superuser:
         return Response(
             {'error': 'Acesso negado. Apenas administradores podem remover usuários.'},
@@ -195,7 +218,6 @@ def delete_user(request, user_id):
         )
     
     try:
-        # Busca usuário (não pode deletar a si mesmo)
         user = User.objects.get(id=user_id)
         
         if user.id == request.user.id:
@@ -234,7 +256,6 @@ def me_view(request):
 @permission_classes([AllowAny])
 def health_check(request):
     """Endpoint para verificar se a API está funcionando"""
-    from django.utils import timezone
     return Response({
         'status': 'online',
         'message': 'API Controle de Estoque está funcionando!',
@@ -251,7 +272,7 @@ def test_cors(request):
     })
 
 # ==============================================================================
-# VIEWSETS DO APLICATIVO
+# 3. VIEWSETS DO APLICATIVO (ESTOQUE)
 # ==============================================================================
 
 class CategoriaViewSet(viewsets.ModelViewSet):
@@ -290,7 +311,6 @@ class ProdutoViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def estoque_baixo(self, request):
         """Lista produtos com estoque abaixo do mínimo"""
-        from django.db.models import F
         produtos = Produto.objects.filter(
             quantidade_estoque__lt=F('estoque_minimo'),
             ativo=True
@@ -365,16 +385,13 @@ class MovimentacaoEstoqueViewSet(viewsets.ModelViewSet):
         serializer.save(usuario=self.request.user)
 
 # ==============================================================================
-# VIEWS DE RELATÓRIOS
+# 4. VIEWS DE RELATÓRIOS
 # ==============================================================================
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def estatisticas_view(request):
     """Retorna estatísticas gerais do sistema"""
-    from django.db.models import Count, Sum
-    from django.utils import timezone
-    
     hoje = timezone.now().date()
     
     total_produtos = Produto.objects.filter(ativo=True).count()
@@ -386,7 +403,6 @@ def estatisticas_view(request):
     valor_total_estoque = sum(p.quantidade_estoque * p.preco_custo for p in produtos)
     
     # Produtos com estoque baixo
-    from django.db.models import F
     produtos_estoque_baixo = Produto.objects.filter(
         quantidade_estoque__lt=F('estoque_minimo'),
         ativo=True
