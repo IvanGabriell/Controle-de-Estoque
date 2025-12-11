@@ -7,7 +7,7 @@ from pathlib import Path
 import os
 from datetime import timedelta
 
-# Build paths
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ==============================================================================
@@ -16,15 +16,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-r#4sg#ygc(&g7em3seei-lo79*3pfeo6f1w(t4hjs1cloc=88*'
 
-# ✅ MODO DESENVOLVIMENTO - Altere para False no EasyPanel
-DEBUG = True
+# No Easypanel, definimos DEBUG=False nas variáveis de ambiente.
+# Se não tiver variável (no seu PC), ele assume True.
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = [
-    'api.morenadoaco.com.br',  # Produção
-    'mysql-db',                # Container MySQL
-    'localhost',               # Local
-    '127.0.0.1',               # Local
-    'backend',                 # Container interno
+    'api.morenadoaco.com.br',  # Domínio de Produção
+    'mysql-db',                # Nome do host do banco no Docker
+    'localhost',               
+    '127.0.0.1',               
+    'backend',                 # Nome interno do container
+    '*'                        # Fallback
 ]
 
 # ==============================================================================
@@ -45,12 +47,12 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     
-    # Your apps
+    # Seus Apps
     'app_estoque',
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware', # CORS deve ser o primeiro!
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -60,6 +62,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# ✅ CORRIGIDO: Mantido como 'config' conforme sua pasta
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
@@ -77,47 +80,37 @@ TEMPLATES = [
     },
 ]
 
+# ✅ CORRIGIDO: Mantido como 'config'
 WSGI_APPLICATION = 'config.wsgi.application'
 
 # ==============================================================================
-# 3. BANCO DE DADOS (USANDO APENAS ENV VARS)
+# 3. BANCO DE DADOS (CONFIGURAÇÃO HÍBRIDA)
 # ==============================================================================
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'controle_estoque',
-        
-        # OBTIDO VIA ENV VARS (DB_USER, DB_PASSWORD)
-        'USER': os.getenv('DB_USER', 'root'),          
-        'PASSWORD': os.getenv('DB_PASSWORD', ''),      
-        
-        'HOST': os.getenv('DB_HOST', '127.0.0.1'),     
+        # Tenta pegar do Easypanel (Variáveis de Ambiente), se não achar, usa o Local
+        'NAME': os.getenv('DB_NAME', 'controle_estoque'),
+        'USER': os.getenv('DB_USER', 'root'),
+        'PASSWORD': os.getenv('DB_PASSWORD', ''),
+        'HOST': os.getenv('DB_HOST', '127.0.0.1'),
         'PORT': '3306',
         'OPTIONS': {
-            'charset': 'utf8mb4',
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
         }
     }
 }
 
-# Password validation
+# Validação de senha
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    { 'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
+    { 'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
+    { 'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator', },
+    { 'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', },
 ]
 
-# Internationalization
+# Internacionalização
 LANGUAGE_CODE = 'pt-br'
 TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = True
@@ -134,15 +127,12 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ==============================================================================
-# 5. DJANGO REST FRAMEWORK (ALTERADO AQUI)
+# 5. REST FRAMEWORK & JWT
 # ==============================================================================
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        # Autenticação para o Site/App (Token)
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        
-        # Autenticação para o Navegador (Login Admin) - ADICIONADO AGORA
         'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
@@ -152,9 +142,8 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 20,
 }
 
-# JWT Configuration
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=120),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
@@ -162,91 +151,41 @@ SIMPLE_JWT = {
 }
 
 # ==============================================================================
-# 6. CORS - CONFIGURAÇÃO COMPLETA PARA LOCAL + PRODUÇÃO
+# 6. CORS & SEGURANÇA (CRÍTICO PARA O FRONTEND FUNCIONAR)
 # ==============================================================================
 
-# ✅ CORS PARA DESENVOLVIMENTO LOCAL
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_HEADERS = [
+    'accept', 'accept-encoding', 'authorization', 'content-type', 
+    'dnt', 'origin', 'user-agent', 'x-csrftoken', 'x-requested-with',
+]
+
+CORS_ALLOW_METHODS = [
+    'DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT',
+]
+
 if DEBUG:
-    CORS_ALLOW_ALL_ORIGINS = True  # Permite todas as origens
-    CORS_ALLOW_CREDENTIALS = True
-    
-    CORS_ALLOW_HEADERS = [
-        'accept', 
-        'accept-encoding', 
-        'authorization', 
-        'content-type', 
-        'dnt', 
-        'origin', 
-        'user-agent',
-        'x-csrftoken', 
-        'x-requested-with',
-    ]
-    
-    CORS_ALLOW_METHODS = ['*']
-    
-    # Desativa segurança para testes
-    SECURE_SSL_REDIRECT = False
-    SESSION_COOKIE_SECURE = False
-    CSRF_COOKIE_SECURE = False
-    
-    # CSRF para local
-    CSRF_TRUSTED_ORIGINS = [
-        'http://localhost:8000',
-        'http://127.0.0.1:8000',
-        'http://localhost:5500',
-        'http://127.0.0.1:5500',
-        'http://localhost:3000',
-        'http://127.0.0.1:3000',
-    ]
+    # --- MODO LOCAL ---
+    CORS_ALLOW_ALL_ORIGINS = True
+    CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
 else:
-    # ✅ CORS PARA PRODUÇÃO
+    # --- MODO PRODUÇÃO (EASYPANEL) ---
     CORS_ALLOWED_ORIGINS = [
-        'https://faculdade.morenadoaco.com.br',
-    ]
-    CORS_ALLOW_CREDENTIALS = True
-    CORS_ALLOW_METHODS = [
-        'DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT',
+        "https://faculdade.morenadoaco.com.br", # Seu Frontend
+        "https://api.morenadoaco.com.br",       # Seu Backend
     ]
     
-    CORS_ALLOW_HEADERS = [
-        'accept', 
-        'accept-encoding', 
-        'authorization',
-        'content-type', 
-        'dnt', 
-        'origin', 
-        'user-agent',
-        'x-csrftoken', 
-        'x-requested-with',
+    CSRF_TRUSTED_ORIGINS = [
+        "https://faculdade.morenadoaco.com.br",
+        "https://api.morenadoaco.com.br",
     ]
     
-    # Segurança para produção
+    # Segurança SSL (HTTPS)
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    CSRF_TRUSTED_ORIGINS = [
-        'https://api.morenadoaco.com.br',
-        'https://faculdade.morenadoaco.com.br',
-    ]
 
-# Proxy settings
+# Proxy para Docker/Easypanel
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 USE_X_FORWARDED_HOST = True
-
-# ==============================================================================
-# 7. LOGGING
-# ==============================================================================
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'root': {
-        'handlers': ['console'],
-        'level': 'INFO' if DEBUG else 'WARNING',
-    },
-}
